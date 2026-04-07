@@ -4,7 +4,7 @@ title: Modernize npm dependencies and supporting code for the Hugo action
 status: To Do
 assignee: []
 created_date: '2026-04-07 05:48'
-updated_date: '2026-04-07 06:41'
+updated_date: '2026-04-07 06:47'
 labels:
   - dependencies
   - maintenance
@@ -40,3 +40,9 @@ Upgrade initiative breakdown:
 4. TASK-0001.03 after TASK-0001.02: upgrade the Jest stack and stabilize mocks/configuration against the newer runtime and tooling assumptions.
 5. TASK-0001.04 last: regenerate lib/, refresh package-lock.json, and align CI/documentation with the final dependency set.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+2026-04-07: User chose the conservative GitHub Actions toolkit migration path for the current dependency-upgrade initiative. A separate follow-up task will track eventual migration to the newer ESM-oriented toolkit line.
+<!-- SECTION:NOTES:END -->
