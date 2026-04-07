@@ -40,9 +40,17 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run lint
 
-      - name: Run ncc
+      - name: Run TypeScript compiler
+        if: startsWith(matrix.os, 'ubuntu-22.04')
+        run: npm run tsc
+
+      - name: Build bundled action
         if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run build
+
+      - name: Verify committed bundle is up to date
+        if: startsWith(matrix.os, 'ubuntu-22.04')
+        run: git diff --exit-code -- lib
 
       - run: npm test
 

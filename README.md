@@ -412,6 +412,18 @@ jobs:
 
 ## Maintainer Notes
 
+The repository commits the bundled action output in `lib/index.js`. After source or dependency changes, regenerate it with:
+
+```sh
+npm run build
+```
+
+For local validation that matches the current integration-test setup, run:
+
+```sh
+env RUNNER_TEMP=/tmp npm test -- --runInBand
+```
+
 Run `npm test` on a Docker container.
 
 ```sh
