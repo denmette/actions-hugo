@@ -1,5 +1,6 @@
 import * as main from '../src/main';
 import * as io from '@actions/io';
+import os from 'os';
 import path from 'path';
 import nock from 'nock';
 import {Tool, Action} from '../src/constants';
@@ -10,8 +11,13 @@ import jsonTestBrew from './data/brew.json';
 jest.setTimeout(30000);
 
 describe('Integration testing run()', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     jest.resetModules();
+
+    const workDir = path.join(`${process.env.HOME}`, Action.WorkDirName);
+    await io.rmRF(workDir);
+
+    process.env['RUNNER_TEMP'] = process.env['RUNNER_TEMP'] || os.tmpdir();
   });
 
   afterEach(async () => {
@@ -19,6 +25,7 @@ describe('Integration testing run()', () => {
     await io.rmRF(workDir);
 
     delete process.env['INPUT_HUGO-VERSION'];
+    delete process.env['INPUT_EXTENDED'];
     nock.cleanAll();
   });
 
