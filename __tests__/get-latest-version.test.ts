@@ -1,6 +1,5 @@
 import {getURL, getLatestVersion} from '../src/get-latest-version';
 import nock from 'nock';
-import {FetchError} from 'node-fetch';
 import {Tool} from '../src/constants';
 import jsonTestBrew from './data/brew.json';
 import jsonTestGithub from './data/github.json';
@@ -45,6 +44,8 @@ describe('getLatestVersion()', () => {
   test('return exception 404', async () => {
     nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(404);
 
-    await expect(getLatestVersion(Tool.Org, Tool.Repo, 'brew')).rejects.toThrowError(FetchError);
+    await expect(getLatestVersion(Tool.Org, Tool.Repo, 'brew')).rejects.toThrow(
+      `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
+    );
   });
 });

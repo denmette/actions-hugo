@@ -4,7 +4,6 @@ import os from 'os';
 import path from 'path';
 import nock from 'nock';
 import {Tool, Action} from '../src/constants';
-import {FetchError} from 'node-fetch';
 import jsonTestBrew from './data/brew.json';
 // import jsonTestGithub from './data/github.json';
 
@@ -71,7 +70,9 @@ describe('Integration testing run()', () => {
     process.env['INPUT_HUGO-VERSION'] = 'latest';
     nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(404);
 
-    await expect(main.run()).rejects.toThrowError(FetchError);
+    await expect(main.run()).rejects.toThrow(
+      `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
+    );
   });
 });
 
