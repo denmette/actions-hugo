@@ -4,7 +4,7 @@ title: Modernize npm dependencies and supporting code for the Hugo action
 status: To Do
 assignee: []
 created_date: '2026-04-07 05:48'
-updated_date: '2026-04-07 06:50'
+updated_date: '2026-04-07 08:28'
 labels:
   - dependencies
   - maintenance
@@ -38,8 +38,10 @@ Upgrade initiative breakdown:
 2. TASK-0001.01 next: modernize runtime dependencies and replace obsolete HTTP dependency usage according to the approved conservative CommonJS-compatible toolkit baseline.
 3. TASK-0001.02 after the baseline is fixed: upgrade the TypeScript and linting toolchain to the versions needed by the chosen conservative path.
 4. TASK-0001.03 after TASK-0001.02: upgrade the Jest stack and stabilize mocks/configuration against the newer runtime and tooling assumptions within the conservative path.
-5. TASK-0001.04 last in the current initiative: regenerate lib/, refresh package-lock.json, and align CI/documentation with the final conservative dependency set.
-6. TASK-0001.06 follow-up initiative after TASK-0001.04: migrate the action to the newer ESM-oriented GitHub Actions toolkit line.
+5. TASK-0001.04 last in the current dependency modernization sequence: regenerate lib/, refresh package-lock.json, and align CI/documentation with the final conservative dependency set.
+6. TASK-2 follow-up after TASK-0001.04: add Renovate configuration for ongoing dependency and GitHub Action update automation.
+7. TASK-3 follow-up after TASK-0001.04: review and clean up GitHub Actions workflows and related automation.
+8. TASK-0001.06 later initiative after TASK-0001.04: migrate the action to the newer ESM-oriented GitHub Actions toolkit line.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
