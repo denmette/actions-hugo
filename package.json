@@ -47,7 +47,7 @@
   },
   "homepage": "https://github.com/peaceiris/actions-hugo#readme",
   "dependencies": {
-    "@actions/core": "^1.11.1",
+    "@actions/core": "^3.0.0",
     "@actions/exec": "^1.1.1",
     "@actions/http-client": "^2.2.3",
     "@actions/io": "^1.1.3",
