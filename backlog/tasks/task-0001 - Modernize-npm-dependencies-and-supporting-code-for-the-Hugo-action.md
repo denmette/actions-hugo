@@ -1,10 +1,10 @@
 ---
 id: TASK-0001
 title: Modernize npm dependencies and supporting code for the Hugo action
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-04-07 05:48'
-updated_date: '2026-04-08 12:02'
+updated_date: '2026-04-08 13:16'
 labels:
   - dependencies
   - maintenance
@@ -24,10 +24,10 @@ Update the repository's outdated npm dependencies in a controlled way, with smal
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Outdated runtime, toolchain, and test dependencies are addressed through scoped child tasks rather than one large upgrade task.
-- [ ] #2 Each child task includes enough repository context for an independent agent to execute it without prior conversation history.
-- [ ] #3 Task dependencies reflect the safest execution order for landing the upgrade work incrementally.
-- [ ] #4 The parent task can be considered done once all child tasks are done and the repository remains buildable and testable on the declared Node/npm versions.
+- [x] #1 Outdated runtime, toolchain, and test dependencies are addressed through scoped child tasks rather than one large upgrade task.
+- [x] #2 Each child task includes enough repository context for an independent agent to execute it without prior conversation history.
+- [x] #3 Task dependencies reflect the safest execution order for landing the upgrade work incrementally.
+- [x] #4 The parent task can be considered done once all child tasks are done and the repository remains buildable and testable on the declared Node/npm versions.
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -41,8 +41,9 @@ Upgrade initiative breakdown:
 5. TASK-0001.04 last in the current dependency modernization sequence: regenerate lib/, refresh package-lock.json, and align CI/documentation with the final conservative dependency set.
 6. TASK-2 follow-up after TASK-0001.04: add Renovate configuration for ongoing dependency and GitHub Action update automation.
 7. TASK-3 follow-up after TASK-0001.04: review and clean up GitHub Actions workflows and related automation.
-8. TASK-0001.06 next remaining execution slice: migrate the action to the newer ESM-oriented GitHub Actions toolkit line.
-9. TASK-0001.07 after TASK-0001.06: move the repository off the deprecated ESLint 7 line once the newer toolkit/tooling baseline is in place.
+8. TASK-0001.06 completed: migrated the action to the newer ESM-oriented GitHub Actions toolkit line.
+9. TASK-0001.07 completed: moved the repository off the deprecated ESLint 7 line and removed the related install-time deprecation warnings.
+10. TASK-0001.08 completed: converted the remaining practical hand-written JavaScript support shim to TypeScript and documented the intentionally retained CommonJS Jest config boundary.
 <!-- SECTION:PLAN:END -->
 
 ## Implementation Notes
@@ -50,5 +51,12 @@ Upgrade initiative breakdown:
 <!-- SECTION:NOTES:BEGIN -->
 2026-04-07: User chose the conservative GitHub Actions toolkit migration path for the current dependency-upgrade initiative. A separate follow-up task will track eventual migration to the newer ESM-oriented toolkit line.
 
-2026-04-08: The conservative modernization sequence is complete through TASK-0001.04, and the maintenance follow-ups TASK-2 and TASK-3 are also complete. The initiative remains open because the remaining post-conservative modernization work is still outstanding in TASK-0001.06 (newer ESM-oriented GitHub Actions toolkit migration) and TASK-0001.07 (deprecated ESLint 7 removal).
+2026-04-08: The conservative modernization sequence is complete through TASK-0001.04, and the maintenance follow-ups TASK-2 and TASK-3 are also complete.
+
+2026-04-08: The post-conservative modernization work is also complete:
+- TASK-0001.06 migrated the action to the newer ESM-oriented GitHub Actions toolkit line, including ESM-compatible source imports, Jest execution, and bundled action output.
+- TASK-0001.07 upgraded the repository off ESLint 7 to an ESLint 9 flat-config toolchain and aligned the minimum Node version with the resulting dependency floor.
+- TASK-0001.08 converted the remaining practical hand-written JavaScript support shim to TypeScript while documenting why `jest.config.cjs` intentionally remains CommonJS.
+
+The parent initiative is now complete. Remaining dependency/security follow-ups such as the npm audit cleanup are tracked separately outside TASK-0001.
 <!-- SECTION:NOTES:END -->
