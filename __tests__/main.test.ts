@@ -1,9 +1,10 @@
-import * as main from '../src/main';
+import {jest} from '@jest/globals';
+import * as main from '../src/main.js';
 import * as io from '@actions/io';
 import os from 'os';
 import path from 'path';
 import nock from 'nock';
-import {Tool, Action} from '../src/constants';
+import {Tool, Action} from '../src/constants.js';
 import jsonTestBrew from './data/brew.json';
 // import jsonTestGithub from './data/github.json';
 

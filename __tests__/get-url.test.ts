@@ -1,4 +1,4 @@
-import getURL from '../src/get-url';
+import getURL from '../src/get-url.js';
 
 describe('getURL()', () => {
   test('get a URL to an asset for each platform', () => {

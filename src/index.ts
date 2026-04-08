@@ -1,5 +1,5 @@
 import * as core from '@actions/core';
-import * as main from './main';
+import * as main from './main.js';
 
 (async (): Promise<void> => {
   try {
