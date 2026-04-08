@@ -26,23 +26,44 @@
       "separateMajorMinor": true
     },
     {
-      "description": "Review GitHub Actions workflow updates together.",
+      "description": "Review GitHub Actions workflow maintenance updates together.",
       "matchManagers": ["github-actions"],
       "matchPackageNames": [
         "actions/checkout",
         "actions/setup-node",
         "actions/upload-artifact",
         "actions/download-artifact",
+        "actions/dependency-review-action",
         "codecov/codecov-action",
         "github/codeql-action"
       ],
-      "groupName": "github-actions-workflows"
+      "groupName": "github-actions-workflows",
+      "groupSlug": "github-actions-workflows"
+    },
+    {
+      "description": "Keep artifact action majors grouped with the wider workflow maintenance work instead of opening isolated PRs.",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": [
+        "actions/upload-artifact",
+        "actions/download-artifact"
+      ],
+      "matchUpdateTypes": ["major"],
+      "groupName": "github-actions-workflows",
+      "groupSlug": "github-actions-workflows"
+    },
+    {
+      "description": "Keep CodeQL workflow updates in the main workflow maintenance group so deprecation-driven upgrades are not isolated.",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": ["github/codeql-action"],
+      "groupName": "github-actions-workflows",
+      "groupSlug": "github-actions-workflows"
     },
     {
       "description": "Review runner image updates together.",
       "matchManagers": ["github-actions"],
       "matchDepNames": ["ubuntu"],
-      "groupName": "github-actions-runner-images"
+      "groupName": "github-actions-runner-images",
+      "groupSlug": "github-actions-runner-images"
     },
     {
       "description": "Treat the newer GitHub Actions toolkit majors as one migration unit.",
