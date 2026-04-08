@@ -3,19 +3,17 @@
 <img width="400" alt="GitHub Actions for Hugo" src="./images/ogp.svg">
 
 [![Project status: active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![license](https://img.shields.io/github/license/peaceiris/actions-hugo.svg)](https://github.com/peaceiris/actions-hugo/blob/main/LICENSE)
-[![release](https://img.shields.io/github/release/peaceiris/actions-hugo.svg)](https://github.com/peaceiris/actions-hugo/releases/latest)
-[![GitHub release date](https://img.shields.io/github/release-date/peaceiris/actions-hugo.svg)](https://github.com/peaceiris/actions-hugo/releases)
-[![Release Feed](https://img.shields.io/badge/release-feed-yellow)](https://github.com/peaceiris/actions-hugo/releases.atom)
-![Test](https://github.com/peaceiris/actions-hugo/workflows/Test/badge.svg?branch=main&event=push)
-![Code Scanning](https://github.com/peaceiris/actions-hugo/workflows/Code%20Scanning/badge.svg?event=push)
-
-[![CodeFactor](https://www.codefactor.io/repository/github/peaceiris/actions-hugo/badge)](https://www.codefactor.io/repository/github/peaceiris/actions-hugo)
-[![codecov](https://codecov.io/gh/peaceiris/actions-hugo/branch/main/graph/badge.svg)](https://codecov.io/gh/peaceiris/actions-hugo)
-[![Maintainability](https://api.codeclimate.com/v1/badges/ebf2eef3a046b396ba9c/maintainability)](https://codeclimate.com/github/peaceiris/actions-hugo/maintainability)
+[![license](https://img.shields.io/github/license/denmette/actions-hugo.svg)](https://github.com/denmette/actions-hugo/blob/main/LICENSE)
+[![release](https://img.shields.io/github/release/denmette/actions-hugo.svg)](https://github.com/denmette/actions-hugo/releases/latest)
+[![GitHub release date](https://img.shields.io/github/release-date/denmette/actions-hugo.svg)](https://github.com/denmette/actions-hugo/releases)
+[![Release Feed](https://img.shields.io/badge/release-feed-yellow)](https://github.com/denmette/actions-hugo/releases.atom)
+![Test](https://github.com/denmette/actions-hugo/actions/workflows/test.yml/badge.svg?branch=main)
+![Code Scanning](https://github.com/denmette/actions-hugo/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)
 
 This **Hugo Setup Action** can install [Hugo] to a virtual machine of **GitHub Actions**.
 **Hugo extended** version, **Hugo Modules**, Linux (Ubuntu), macOS, and Windows are supported.
+
+This repository is a maintained fork of [`peaceiris/actions-hugo`](https://github.com/peaceiris/actions-hugo). The current fork keeps upstream attribution while publishing issues, releases, and maintainer metadata from `denmette/actions-hugo`.
 
 [Hugo]: https://github.com/gohugoio/hugo
 
@@ -397,15 +395,16 @@ jobs:
 
 ## License
 
-- [MIT License - peaceiris/actions-hugo]
+- [MIT License - denmette/actions-hugo]
 
-[MIT License - peaceiris/actions-hugo]: https://github.com/peaceiris/actions-hugo/blob/main/LICENSE
+[MIT License - denmette/actions-hugo]: https://github.com/denmette/actions-hugo/blob/main/LICENSE
 
 
 
 ## About Maintainer
 
-- [peaceiris homepage](https://peaceiris.com/)
+- Original project: [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo)
+- Current fork maintainer: [Maarten Casteels (@denmette)](https://github.com/denmette)
 - [GitHub Action Hero: Shohei Ueda - The GitHub Blog](https://github.blog/2020-03-22-github-action-hero-shohei-ueda/)
 
 

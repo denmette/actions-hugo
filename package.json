@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/peaceiris/actions-hugo.git"
+    "url": "git+https://github.com/denmette/actions-hugo.git"
   },
   "keywords": [
     "GitHub",
@@ -41,12 +41,12 @@
     "Hugo",
     "Setup"
   ],
-  "author": "peaceiris",
+  "author": "Maarten Casteels (@denmette)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/peaceiris/actions-hugo/issues"
+    "url": "https://github.com/denmette/actions-hugo/issues"
   },
-  "homepage": "https://github.com/peaceiris/actions-hugo#readme",
+  "homepage": "https://github.com/denmette/actions-hugo#readme",
   "dependencies": {
     "@actions/core": "^3.0.0",
     "@actions/exec": "^3.0.0",
