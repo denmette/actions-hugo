@@ -1,4 +1,4 @@
-name: "Code Scanning"
+name: 'Code Scanning'
 
 on:
   push:
@@ -6,9 +6,15 @@ on:
       - main
   pull_request:
 
+permissions:
+  actions: read
+  contents: read
+  security-events: write
+
 jobs:
   CodeQL-Build:
     runs-on: ubuntu-22.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
