@@ -10,7 +10,7 @@ module.exports = {
     '^@actions/io$': '<rootDir>/node_modules/@actions/io/lib/io.js',
     '^@actions/tool-cache$': '<rootDir>/node_modules/@actions/tool-cache/lib/tool-cache.js'
   },
-  setupFiles: ['<rootDir>/__tests__/node-compat/globals.cjs'],
+  setupFiles: ['<rootDir>/__tests__/node-compat/globals.ts'],
   testEnvironment: 'node',
   testMatch: ['**/*.test.ts'],
   transform: {
