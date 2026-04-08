@@ -1,10 +1,11 @@
 ---
 id: TASK-2
 title: Add Renovate configuration for dependency maintenance
-status: To Do
-assignee: []
+status: Done
+assignee:
+  - codex
 created_date: '2026-04-07 08:27'
-updated_date: '2026-04-07 15:03'
+updated_date: '2026-04-08 11:12'
 labels:
   - dependencies
   - automation
@@ -21,10 +22,10 @@ Add Renovate to this repository so dependency update work can be proposed and ma
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 A renovate.json or equivalent Renovate repository configuration is added at the repository root with settings appropriate for this project.
-- [ ] #2 The configuration covers npm dependencies and GitHub Action version updates in a way that matches the repository's maintenance goals and review capacity.
-- [ ] #3 Any necessary documentation or comments explain the intended Renovate behavior for future maintainers.
-- [ ] #4 The configuration is validated or exercised to the extent practical within the repository workflow.
+- [x] #1 A renovate.json or equivalent Renovate repository configuration is added at the repository root with settings appropriate for this project.
+- [x] #2 The configuration covers npm dependencies and GitHub Action version updates in a way that matches the repository's maintenance goals and review capacity.
+- [x] #3 Any necessary documentation or comments explain the intended Renovate behavior for future maintainers.
+- [x] #4 The configuration is validated or exercised to the extent practical within the repository workflow.
 <!-- AC:END -->
 
 ## Implementation Notes
@@ -46,4 +47,6 @@ Planned subtasks:
 - TASK-2.2 group GitHub Actions workflow update PRs
 - TASK-2.3 group npm tooling and test-stack update PRs
 - TASK-2.4 define handling for stale/superseded Renovate PRs and validation expectations
+
+2026-04-08: Task completed through the combined landing of renovate.json and the related policy subtasks. The repository now has a versioned Renovate baseline covering grouped GitHub Actions maintenance updates, grouped npm maintenance updates, separate Node runtime handling, scheduling/noise controls, and documented stale-PR handling guidance.
 <!-- SECTION:NOTES:END -->
