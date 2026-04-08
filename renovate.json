@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "timezone": "Atlantic/Canary",
+  "timezone": "Europe/Brussels",
   "schedule": [
     "after 10pm every weekday",
     "before 5am every weekday",
