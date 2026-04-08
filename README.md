@@ -14,6 +14,7 @@ This **Hugo Setup Action** can install [Hugo] to a virtual machine of **GitHub A
 **Hugo extended** version, **Hugo Modules**, Linux (Ubuntu), macOS, and Windows are supported.
 
 This repository is a maintained fork of [`peaceiris/actions-hugo`](https://github.com/peaceiris/actions-hugo). The current fork keeps upstream attribution while publishing issues, releases, and maintainer metadata from `denmette/actions-hugo`.
+Unless you intentionally want the original upstream action, the examples below use `denmette/actions-hugo`.
 
 [Hugo]: https://github.com/gohugoio/hugo
 
@@ -89,7 +90,7 @@ jobs:
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+        uses: denmette/actions-hugo@v3
         with:
           hugo-version: '0.119.0'
           # extended: true
@@ -119,7 +120,7 @@ Set `extended: true` to use a Hugo extended version.
 
 ```yaml
 - name: Setup Hugo
-  uses: peaceiris/actions-hugo@v3
+  uses: denmette/actions-hugo@v3
   with:
     hugo-version: '0.119.0'
     extended: true
@@ -131,7 +132,7 @@ Set `hugo-version: 'latest'` to use the latest version of Hugo.
 
 ```yaml
 - name: Setup Hugo
-  uses: peaceiris/actions-hugo@v3
+  uses: denmette/actions-hugo@v3
   with:
     hugo-version: 'latest'
 ```
@@ -202,7 +203,7 @@ Next, add a step to read a Hugo version from the `.env` file.
         echo "HUGO_VERSION=${HUGO_VERSION}" >> "${GITHUB_OUTPUT}"
 
     - name: Setup Hugo
-      uses: peaceiris/actions-hugo@v3
+      uses: denmette/actions-hugo@v3
       with:
         hugo-version: '${{ steps.hugo-version.outputs.HUGO_VERSION }}'
         extended: true
@@ -268,7 +269,7 @@ jobs:
           fetch-depth: 0         # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+        uses: denmette/actions-hugo@v3
         with:
           hugo-version: '0.119.0'
           extended: true
@@ -322,7 +323,7 @@ jobs:
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+        uses: denmette/actions-hugo@v3
         with:
           hugo-version: '0.119.0'
           extended: true
@@ -376,7 +377,7 @@ jobs:
         run: git config core.quotePath false
 
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
+        uses: denmette/actions-hugo@v3
         with:
           hugo-version: '0.119.0'
 ```
@@ -405,6 +406,7 @@ jobs:
 
 - Original project: [peaceiris/actions-hugo](https://github.com/peaceiris/actions-hugo)
 - Current fork maintainer: [Maarten Casteels (@denmette)](https://github.com/denmette)
+- README examples in this repository target the maintained fork: [denmette/actions-hugo](https://github.com/denmette/actions-hugo)
 - [GitHub Action Hero: Shohei Ueda - The GitHub Blog](https://github.blog/2020-03-22-github-action-hero-shohei-ueda/)
 
 
