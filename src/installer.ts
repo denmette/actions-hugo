@@ -1,11 +1,11 @@
 import * as core from '@actions/core';
 import * as tc from '@actions/tool-cache';
 import * as io from '@actions/io';
-import getOS from './get-os';
-import getArch from './get-arch';
-import getURL from './get-url';
+import getOS from './get-os.js';
+import getArch from './get-arch.js';
+import getURL from './get-url.js';
 import * as path from 'path';
-import {Tool, Action} from './constants';
+import {Tool, Action} from './constants.js';
 
 export function getHomeDir(): string {
   let homedir = '';

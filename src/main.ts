@@ -1,8 +1,8 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
-import {getLatestVersion} from './get-latest-version';
-import {installer} from './installer';
-import {Tool} from './constants';
+import {getLatestVersion} from './get-latest-version.js';
+import {installer} from './installer.js';
+import {Tool} from './constants.js';
 
 export interface ActionResult {
   exitcode: number;

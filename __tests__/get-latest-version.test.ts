@@ -1,6 +1,7 @@
-import {getURL, getLatestVersion} from '../src/get-latest-version';
+import {jest} from '@jest/globals';
+import {getURL, getLatestVersion} from '../src/get-latest-version.js';
 import nock from 'nock';
-import {Tool} from '../src/constants';
+import {Tool} from '../src/constants.js';
 import jsonTestBrew from './data/brew.json';
 import jsonTestGithub from './data/github.json';
 

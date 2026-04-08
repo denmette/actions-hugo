@@ -1,4 +1,4 @@
-import getOS from '../src/get-os';
+import getOS from '../src/get-os.js';
 
 describe('getOS', () => {
   test('os type', () => {

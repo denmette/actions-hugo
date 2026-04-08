@@ -1,4 +1,4 @@
-import getArch from '../src/get-arch';
+import getArch from '../src/get-arch.js';
 
 describe('getArch', () => {
   test('processor architecture', () => {
