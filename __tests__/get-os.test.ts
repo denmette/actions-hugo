@@ -1,3 +1,4 @@
+import {describe, expect, test} from 'vitest';
 import getOS from '../src/get-os.js';
 
 describe('getOS', () => {

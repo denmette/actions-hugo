@@ -1,3 +1,4 @@
+import {describe, expect, test} from 'vitest';
 import getURL from '../src/get-url.js';
 
 describe('getURL()', () => {
