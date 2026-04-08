@@ -21,6 +21,13 @@ on:
       - 'Dockerfile'
       - 'Makefile'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   dev-image-test:
     runs-on: ubuntu-22.04
