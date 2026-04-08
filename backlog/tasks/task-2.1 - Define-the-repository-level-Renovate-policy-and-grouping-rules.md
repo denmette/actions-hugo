@@ -1,11 +1,11 @@
 ---
 id: TASK-2.1
 title: Define the repository-level Renovate policy and grouping rules
-status: In Progress
+status: Done
 assignee:
   - codex
 created_date: '2026-04-07 15:03'
-updated_date: '2026-04-08 10:18'
+updated_date: '2026-04-08 10:20'
 labels:
   - dependencies
   - automation
