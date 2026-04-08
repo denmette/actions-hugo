@@ -90,6 +90,6 @@ describe('showVersion()', () => {
   });
 
   test('return not found', async () => {
-    await expect(main.showVersion('gitgit', ['--version'])).rejects.toThrowError(Error);
+    await expect(main.showVersion('gitgit', ['--version'])).rejects.toThrow(Error);
   });
 });
