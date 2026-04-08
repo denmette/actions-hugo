@@ -1,0 +1,84 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Europe/Brussels",
+  "schedule": [
+    "after 10pm every weekday",
+    "before 5am every weekday",
+    "every weekend"
+  ],
+  "labels": ["dependencies", "renovate"],
+  "dependencyDashboard": true,
+  "rebaseWhen": "behind-base-branch",
+  "prConcurrentLimit": 8,
+  "rangeStrategy": "bump",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["every weekend"]
+  },
+  "packageRules": [
+    {
+      "description": "Keep major Node runtime baseline moves separate from normal maintenance work.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["node", "@types/node"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "node-runtime-major",
+      "separateMajorMinor": true
+    },
+    {
+      "description": "Review GitHub Actions workflow updates together.",
+      "matchManagers": ["github-actions"],
+      "matchPackageNames": [
+        "actions/checkout",
+        "actions/setup-node",
+        "actions/upload-artifact",
+        "actions/download-artifact",
+        "codecov/codecov-action",
+        "github/codeql-action"
+      ],
+      "groupName": "github-actions-workflows"
+    },
+    {
+      "description": "Review runner image updates together.",
+      "matchManagers": ["github-actions"],
+      "matchDepNames": ["ubuntu"],
+      "groupName": "github-actions-runner-images"
+    },
+    {
+      "description": "Treat the newer GitHub Actions toolkit majors as one migration unit.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": [
+        "@actions/core",
+        "@actions/exec",
+        "@actions/io",
+        "@actions/tool-cache"
+      ],
+      "groupName": "github-actions-toolkit-majors"
+    },
+    {
+      "description": "Keep tooling-major updates together.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": [
+        "eslint",
+        "@typescript-eslint/eslint-plugin",
+        "@typescript-eslint/parser",
+        "typescript",
+        "prettier",
+        "eslint-plugin-jest"
+      ],
+      "groupName": "tooling-majors"
+    },
+    {
+      "description": "Keep test-stack updates together.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["jest", "ts-jest", "@types/jest", "nock"],
+      "groupName": "test-stack"
+    },
+    {
+      "description": "Keep local workflow tooling together.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["husky", "lint-staged"],
+      "groupName": "local-workflow-tooling"
+    }
+  ]
+}
