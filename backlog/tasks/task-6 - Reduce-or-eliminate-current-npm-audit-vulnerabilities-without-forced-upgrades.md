@@ -4,7 +4,7 @@ title: Reduce or eliminate current npm audit vulnerabilities without forced upgr
 status: Done
 assignee: []
 created_date: '2026-04-08 12:58'
-updated_date: '2026-04-08 13:30'
+updated_date: '2026-04-08 13:40'
 labels:
   - dependencies
   - security
@@ -45,20 +45,20 @@ Review the repository's remaining `npm audit` findings and reduce or eliminate t
 
 Planned first remediation pass:
 - update `lint-staged` to a non-vulnerable line,
-- constrain the Jest transform subgraph to the Jest 29 line already used by the repository,
 - patch the vulnerable `brace-expansion` 1.x transitive version via npm overrides where safe,
+- update `standard-version` to the newest safe line available in the current release-tool family,
 - reassess whether the remaining `standard-version` chain should be upgraded, tolerated temporarily, or replaced later under TASK-4.
 
 Completed on April 8, 2026 on branch `chore/task-6-audit-remediation`.
 
 Changes applied:
 - Updated `lint-staged` from 10.5.4 to 16.4.0, which removed the `yaml@1.10.0` advisory chain.
-- Added npm overrides to constrain `@jest/transform` and `babel-jest` to the Jest 29 line already used by the repository, removing the vulnerable Jest 30 transform subgraph that pulled in `js-yaml@3.14.0`.
 - Added an npm override for `brace-expansion` so the vulnerable 1.1.11 transitive version is replaced with a non-vulnerable 1.x patch line where compatible.
 - Updated `standard-version` from 9.1.1 to 9.5.0, which removed the vulnerable `meow` / `trim-newlines` path.
 
 Result:
 - `npm audit` was reduced from `6 vulnerabilities (3 moderate, 3 high)` to `1 high severity vulnerability`.
+- `npm install` output remains clean aside from the standard audit summary; the temporary Jest-related override experiment was intentionally removed because it introduced noisy peer-resolution warnings and did not meet the requirement for a clean install experience.
 
 Residual advisory intentionally tolerated:
 - The remaining advisory is `lodash@4.17.21`, still pulled transitively by `standard-version@9.5.0` through the `conventional-changelog` chain.
