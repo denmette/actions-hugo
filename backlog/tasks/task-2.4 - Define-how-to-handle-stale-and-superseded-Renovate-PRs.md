@@ -1,11 +1,11 @@
 ---
 id: TASK-2.4
 title: Define how to handle stale and superseded Renovate PRs
-status: In Progress
+status: Done
 assignee:
   - codex
 created_date: '2026-04-07 15:03'
-updated_date: '2026-04-08 11:03'
+updated_date: '2026-04-08 11:04'
 labels:
   - automation
   - renovate
