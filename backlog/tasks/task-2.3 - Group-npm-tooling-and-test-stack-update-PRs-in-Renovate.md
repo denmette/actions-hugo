@@ -1,11 +1,11 @@
 ---
 id: TASK-2.3
 title: Group npm tooling and test-stack update PRs in Renovate
-status: In Progress
+status: Done
 assignee:
   - codex
 created_date: '2026-04-07 15:03'
-updated_date: '2026-04-08 10:47'
+updated_date: '2026-04-08 10:49'
 labels:
   - automation
   - renovate
