@@ -4,7 +4,7 @@ title: Enforce conventional commit style for pull requests
 status: Done
 assignee: []
 created_date: '2026-04-08 11:35'
-updated_date: '2026-04-08 11:46'
+updated_date: '2026-04-08 11:52'
 labels:
   - ci
   - pull-requests
@@ -37,10 +37,13 @@ Execution note on April 8, 2026: this task will enforce conventional commit styl
 Completed on April 8, 2026 on branch `chore/task-5-conventional-pr-check`.
 
 Changes applied:
-- Added `.github/workflows/conventional-pr.yml` to validate pull request titles with `amannn/action-semantic-pull-request@v6`.
+- Added `.github/workflows/conventional-pr.yml` to validate pull request titles with `ytanikin/pr-conventional-commits@1.5.2`.
 - Scoped the enforced types to the repository's current conventional commit vocabulary: `build`, `chore`, `ci`, `docs`, `feat`, `fix`, `perf`, `refactor`, `revert`, `style`, and `test`.
 - Chose PR title enforcement, not commit-by-commit enforcement, so squash-merge workflows remain practical and future semantic-release adoption has a stable release signal.
-- Added a maintainer note in `README.md` showing the expected PR-title format and examples.
+- Disabled automatic PR labeling so the workflow remains focused on validation only.
+- Added a maintainer note in `README.md` showing the expected PR-title format and examples, and clarifying that this check is separate from future release automation.
+
+Follow-up adjustment on April 8, 2026: the original implementation used `amannn/action-semantic-pull-request`, but the repository switched to `ytanikin/pr-conventional-commits` so pull-request validation stays separate from eventual semantic-release adoption.
 
 Validation:
 - `ruby -e 'require "yaml"; Dir[".github/workflows/*.yml"].sort.each { |f| YAML.load_file(f) }'`
