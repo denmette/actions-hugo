@@ -23,7 +23,16 @@
       "matchPackageNames": ["node", "@types/node"],
       "matchUpdateTypes": ["major"],
       "groupName": "node-runtime-major",
+      "groupSlug": "node-runtime-major",
       "separateMajorMinor": true
+    },
+    {
+      "description": "Keep supported Node baseline maintenance updates together without mixing them with broader tooling work.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["node", "@types/node"],
+      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+      "groupName": "node-runtime-maintenance",
+      "groupSlug": "node-runtime-maintenance"
     },
     {
       "description": "Review GitHub Actions workflow maintenance updates together.",
@@ -74,10 +83,11 @@
         "@actions/io",
         "@actions/tool-cache"
       ],
-      "groupName": "github-actions-toolkit-majors"
+      "groupName": "github-actions-toolkit-majors",
+      "groupSlug": "github-actions-toolkit-majors"
     },
     {
-      "description": "Keep tooling-major updates together.",
+      "description": "Keep npm tooling updates together.",
       "matchManagers": ["npm"],
       "matchPackageNames": [
         "eslint",
@@ -87,19 +97,28 @@
         "prettier",
         "eslint-plugin-jest"
       ],
-      "groupName": "tooling-majors"
+      "groupName": "tooling-stack",
+      "groupSlug": "tooling-stack"
     },
     {
       "description": "Keep test-stack updates together.",
       "matchManagers": ["npm"],
-      "matchPackageNames": ["jest", "ts-jest", "@types/jest", "nock"],
-      "groupName": "test-stack"
+      "matchPackageNames": [
+        "jest",
+        "ts-jest",
+        "@types/jest",
+        "@types/istanbul-lib-report",
+        "nock"
+      ],
+      "groupName": "test-stack",
+      "groupSlug": "test-stack"
     },
     {
       "description": "Keep local workflow tooling together.",
       "matchManagers": ["npm"],
       "matchPackageNames": ["husky", "lint-staged"],
-      "groupName": "local-workflow-tooling"
+      "groupName": "local-workflow-tooling",
+      "groupSlug": "local-workflow-tooling"
     }
   ]
 }
