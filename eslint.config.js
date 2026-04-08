@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
-import jestPlugin from 'eslint-plugin-jest';
 
 const nodeGlobals = {
   AbortController: 'readonly',
@@ -10,15 +9,6 @@ const nodeGlobals = {
   console: 'readonly',
   DOMException: 'readonly',
   process: 'readonly'
-};
-
-const jestGlobals = {
-  afterEach: 'readonly',
-  beforeEach: 'readonly',
-  describe: 'readonly',
-  expect: 'readonly',
-  jest: 'readonly',
-  test: 'readonly'
 };
 
 export default [
@@ -41,18 +31,6 @@ export default [
     }
   },
   {
-    files: ['__tests__/**/*.ts'],
-    plugins: {
-      jest: jestPlugin
-    },
-    languageOptions: {
-      globals: {
-        ...nodeGlobals,
-        ...jestGlobals
-      }
-    },
-    rules: {
-      ...jestPlugin.configs['flat/recommended'].rules
-    }
+    files: ['__tests__/**/*.ts']
   }
 ];

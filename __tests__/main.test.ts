@@ -1,18 +1,14 @@
-import {jest} from '@jest/globals';
-import * as main from '../src/main.js';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import * as io from '@actions/io';
 import os from 'os';
 import path from 'path';
-import nock from 'nock';
 import {Tool, Action} from '../src/constants.js';
-import jsonTestBrew from './data/brew.json';
-// import jsonTestGithub from './data/github.json';
 
-jest.setTimeout(30000);
+type ActionResult = import('../src/main.js').ActionResult;
 
 describe('Integration testing run()', () => {
   beforeEach(async () => {
-    jest.resetModules();
+    vi.resetModules();
 
     const workDir = path.join(`${process.env.HOME}`, Action.WorkDirName);
     await io.rmRF(workDir);
@@ -26,50 +22,66 @@ describe('Integration testing run()', () => {
 
     delete process.env['INPUT_HUGO-VERSION'];
     delete process.env['INPUT_EXTENDED'];
-    nock.cleanAll();
+    vi.doUnmock('../src/get-latest-version.js');
   });
 
   test('succeed in installing a custom version', async () => {
+    const main = await import('../src/main.js');
     const testVersion = Tool.TestVersionSpec;
     process.env['INPUT_HUGO-VERSION'] = testVersion;
-    const result: main.ActionResult = await main.run();
+    const result: ActionResult = await main.run();
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(`hugo v${testVersion}`);
   });
 
   test('succeed in installing a custom extended version', async () => {
+    const main = await import('../src/main.js');
     const testVersion = Tool.TestVersionSpec;
     process.env['INPUT_HUGO-VERSION'] = testVersion;
     process.env['INPUT_EXTENDED'] = 'true';
-    const result: main.ActionResult = await main.run();
+    const result: ActionResult = await main.run();
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(`hugo v${testVersion}`);
     expect(result.output).toMatch(`extended`);
   });
 
   test('succeed in installing the latest version', async () => {
-    const testVersion = 'latest';
-    process.env['INPUT_HUGO-VERSION'] = testVersion;
-    nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(200, jsonTestBrew);
-    const result: main.ActionResult = await main.run();
+    vi.doMock('../src/get-latest-version.js', () => ({
+      getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+    }));
+
+    const main = await import('../src/main.js');
+    process.env['INPUT_HUGO-VERSION'] = 'latest';
+    const result: ActionResult = await main.run();
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
   });
 
   test('succeed in installing the latest extended version', async () => {
-    const testVersion = 'latest';
-    process.env['INPUT_HUGO-VERSION'] = testVersion;
+    vi.doMock('../src/get-latest-version.js', () => ({
+      getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+    }));
+
+    const main = await import('../src/main.js');
+    process.env['INPUT_HUGO-VERSION'] = 'latest';
     process.env['INPUT_EXTENDED'] = 'true';
-    nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(200, jsonTestBrew);
-    const result: main.ActionResult = await main.run();
+    const result: ActionResult = await main.run();
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
     expect(result.output).toMatch(`extended`);
   });
 
   test('fail to install the latest version due to 404 of brew', async () => {
+    vi.doMock('../src/get-latest-version.js', () => ({
+      getLatestVersion: vi
+        .fn()
+        .mockRejectedValue(
+          new Error(`Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`)
+        )
+    }));
+
+    const main = await import('../src/main.js');
     process.env['INPUT_HUGO-VERSION'] = 'latest';
-    nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(404);
 
     await expect(main.run()).rejects.toThrow(
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
@@ -78,18 +90,20 @@ describe('Integration testing run()', () => {
 });
 
 describe('showVersion()', () => {
-  let result: main.ActionResult = {
+  let result: {exitcode: number; output: string} = {
     exitcode: 0,
     output: ''
   };
 
   test('return version', async () => {
+    const main = await import('../src/main.js');
     result = await main.showVersion('git', ['--version']);
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(/git version/);
   });
 
   test('return not found', async () => {
+    const main = await import('../src/main.js');
     await expect(main.showVersion('gitgit', ['--version'])).rejects.toThrow(Error);
   });
 });

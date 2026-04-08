@@ -1,16 +1,22 @@
-import {jest} from '@jest/globals';
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {getURL, getLatestVersion} from '../src/get-latest-version.js';
-import nock from 'nock';
 import {Tool} from '../src/constants.js';
-import jsonTestBrew from './data/brew.json';
-import jsonTestGithub from './data/github.json';
+
+const mockGet = vi.fn();
+
+vi.mock('@actions/http-client', () => ({
+  HttpClient: vi.fn().mockImplementation(() => ({
+    get: mockGet
+  }))
+}));
 
 beforeEach(() => {
-  jest.resetModules();
+  vi.resetModules();
+  mockGet.mockReset();
 });
 
 afterEach(() => {
-  nock.cleanAll();
+  vi.clearAllMocks();
 });
 
 describe('getURL()', () => {
@@ -27,23 +33,41 @@ describe('getURL()', () => {
 
 describe('getLatestVersion()', () => {
   test('return latest version via brew', async () => {
-    nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(200, jsonTestBrew);
+    mockGet.mockResolvedValue({
+      message: {
+        statusCode: 200,
+        statusMessage: 'OK'
+      },
+      readBody: vi
+        .fn()
+        .mockResolvedValue(JSON.stringify({versions: {stable: Tool.TestVersionLatest}}))
+    });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'brew');
     expect(versionLatest).toMatch(Tool.TestVersionLatest);
   });
 
   test('return latest version via GitHub', async () => {
-    nock('https://api.github.com')
-      .get(`/repos/${Tool.Org}/${Tool.Repo}/releases/latest`)
-      .reply(200, jsonTestGithub);
+    mockGet.mockResolvedValue({
+      message: {
+        statusCode: 200,
+        statusMessage: 'OK'
+      },
+      readBody: vi.fn().mockResolvedValue(JSON.stringify({tag_name: Tool.TestVersionLatest}))
+    });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'github');
     expect(versionLatest).toMatch(Tool.TestVersionLatest);
   });
 
   test('return exception 404', async () => {
-    nock('https://formulae.brew.sh').get(`/api/formula/${Tool.Repo}.json`).reply(404);
+    mockGet.mockResolvedValue({
+      message: {
+        statusCode: 404,
+        statusMessage: 'Not Found'
+      },
+      readBody: vi.fn().mockResolvedValue('')
+    });
 
     await expect(getLatestVersion(Tool.Org, Tool.Repo, 'brew')).rejects.toThrow(
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`

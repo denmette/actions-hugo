@@ -1,3 +1,4 @@
+import {describe, expect, test} from 'vitest';
 import getArch from '../src/get-arch.js';
 
 describe('getArch', () => {
