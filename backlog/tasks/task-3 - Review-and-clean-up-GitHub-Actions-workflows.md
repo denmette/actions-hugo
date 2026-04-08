@@ -52,4 +52,11 @@ Validation:
 - `npx prettier --check --parser yaml .github/workflows/*.yml`
 
 No action metadata changes were required for this workflow cleanup task.
+
+Follow-up fix on April 8, 2026: the dev-image workflow exposed that the repository Dockerfile still used `node:${NODE_VERSION}-buster-slim` without a default `ARG`, which breaks current Node 20 image resolution and triggers Docker's invalid default ARG warning. The Dockerfile was updated to default `NODE_VERSION=20.11.1` and use `node:${NODE_VERSION}-bookworm-slim` instead.
+
+Additional validation attempted:
+- `make build`
+
+That build could not complete locally because Docker was unavailable on the workstation at the time of the check: `Cannot connect to the Docker daemon at unix:///Users/macs/.docker/run/docker.sock`.
 <!-- SECTION:NOTES:END -->
