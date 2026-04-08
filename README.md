@@ -424,6 +424,8 @@ For local validation that matches the current integration-test setup, run:
 env RUNNER_TEMP=/tmp npm test -- --runInBand
 ```
 
+Pull request titles are expected to follow the Conventional Commits format because repository automation validates the PR title directly. This check is separate from release automation, so `semantic-release` can stay focused on actual release tagging and notes later. Examples: `fix: repair bundle output`, `feat(ci): add semantic release`, `chore(deps): update eslint`.
+
 Run `npm test` on a Docker container.
 
 ```sh

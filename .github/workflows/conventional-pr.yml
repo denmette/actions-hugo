@@ -1,0 +1,23 @@
+name: Conventional PR
+
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - reopened
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-title:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Validate pull request title
+        uses: ytanikin/pr-conventional-commits@1.5.2
+        with:
+          task_types: '["build","chore","ci","docs","feat","fix","perf","refactor","revert","style","test"]'
+          add_label: 'false'
