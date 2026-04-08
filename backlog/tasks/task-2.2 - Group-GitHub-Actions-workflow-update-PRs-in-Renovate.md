@@ -1,11 +1,11 @@
 ---
 id: TASK-2.2
 title: Group GitHub Actions workflow update PRs in Renovate
-status: In Progress
+status: Done
 assignee:
   - codex
 created_date: '2026-04-07 15:03'
-updated_date: '2026-04-08 10:34'
+updated_date: '2026-04-08 10:35'
 labels:
   - automation
   - renovate
