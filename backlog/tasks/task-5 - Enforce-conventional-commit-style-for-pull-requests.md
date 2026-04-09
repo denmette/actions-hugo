@@ -4,7 +4,7 @@ title: Enforce conventional commit style for pull requests
 status: Done
 assignee: []
 created_date: '2026-04-08 11:35'
-updated_date: '2026-04-08 11:52'
+updated_date: '2026-04-09 09:24'
 labels:
   - ci
   - pull-requests
@@ -44,6 +44,8 @@ Changes applied:
 - Added a maintainer note in `README.md` showing the expected PR-title format and examples, and clarifying that this check is separate from future release automation.
 
 Follow-up adjustment on April 8, 2026: the original implementation used `amannn/action-semantic-pull-request`, but the repository switched to `ytanikin/pr-conventional-commits` so pull-request validation stays separate from eventual semantic-release adoption.
+
+Follow-up adjustment on April 9, 2026: TASK-19 switched the workflow back to `amannn/action-semantic-pull-request@v6` because the repository's Node 24 migration required a maintained action with a clearer current runtime path. The enforcement scope remains PR titles only, and the separation from future `semantic-release` tagging still holds.
 
 Validation:
 - `ruby -e 'require "yaml"; Dir[".github/workflows/*.yml"].sort.each { |f| YAML.load_file(f) }'`

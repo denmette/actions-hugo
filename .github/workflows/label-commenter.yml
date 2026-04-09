@@ -19,7 +19,104 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Label Commenter
-        uses: peaceiris/actions-label-commenter@v1.10.0
+        uses: actions/github-script@v8
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # config_file: .github/label-commenter-config.yml
+          script: |
+            const issue_number = context.payload.issue.number
+            const labelName = context.payload.label?.name
+            const action = context.payload.action
+
+            const rules = {
+              invalid: {
+                labeled: {
+                  body: 'Please follow the issue templates.',
+                  action: 'close'
+                }
+              },
+              forum: {
+                labeled: {
+                  body: [
+                    'Please ask questions about GitHub Actions or Hugo at the following forum.',
+                    '- [GitHub Actions Community Forum](https://github.community/c/github-actions)',
+                    '- [Hugo Community Forum](https://discourse.gohugo.io/)'
+                  ].join('\n'),
+                  action: 'close'
+                }
+              },
+              wontfix: {
+                labeled: {
+                  body: 'This will not be worked on but we appreciate your contribution.',
+                  action: 'close'
+                },
+                unlabeled: {
+                  body: 'This has become active again.',
+                  action: 'open'
+                }
+              },
+              duplicate: {
+                labeled: {
+                  body: 'This issue already exists.',
+                  action: 'close'
+                }
+              },
+              'good first issue': {
+                labeled: {
+                  body: 'This issue is easy for contributing. Everyone can work on this.'
+                }
+              },
+              resolved: {
+                labeled: {
+                  body: [
+                    'This issue has been **LOCKED** because of it being resolved!',
+                    '',
+                    'The issue has been fixed and is therefore considered resolved.',
+                    'If you still encounter this or it has changed, open a new issue instead of responding to solved ones.'
+                  ].join('\n'),
+                  action: 'close',
+                  locking: 'lock',
+                  lock_reason: 'resolved'
+                }
+              }
+            }
+
+            const rule = rules[labelName]?.[action]
+            if (!rule) {
+              core.info(`No label-commenter rule for label=${labelName} action=${action}`)
+              return
+            }
+
+            if (rule.body) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                body: rule.body
+              })
+            }
+
+            if (rule.action === 'close') {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                state: 'closed'
+              })
+            }
+
+            if (rule.action === 'open') {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                state: 'open'
+              })
+            }
+
+            if (rule.locking === 'lock') {
+              await github.rest.issues.lock({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                lock_reason: rule.lock_reason
+              })
+            }
