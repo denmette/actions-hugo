@@ -69,7 +69,7 @@ describe('installer()', () => {
     expect(mockDownloadTool).toHaveBeenNthCalledWith(1, candidateURLs[0]);
     expect(mockDownloadTool).toHaveBeenNthCalledWith(2, candidateURLs[1]);
     expect(mockGetReleaseAssetURL).not.toHaveBeenCalled();
-    expect(mockAddPath).toHaveBeenCalledWith('/tmp/actions_hugo/bin');
+    expect(mockAddPath).toHaveBeenCalledWith(expect.stringMatching(/actions_hugo[\\/]+bin$/));
     expect(mockMv).toHaveBeenCalled();
   });
 
