@@ -2,7 +2,7 @@ name: User Support
 description: Questions for this action
 title: "support: "
 labels: support
-assignees: peaceiris
+assignees: denmette
 body:
   - type: markdown
     attributes:

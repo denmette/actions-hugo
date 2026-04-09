@@ -2,7 +2,7 @@ name: Bug Report
 description: Try the User Support Issue Template first.
 title: 'bug: '
 labels: bug
-assignees: peaceiris
+assignees: denmette
 body:
   - type: markdown
     attributes:
