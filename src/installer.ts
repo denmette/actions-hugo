@@ -3,7 +3,7 @@ import * as tc from '@actions/tool-cache';
 import * as io from '@actions/io';
 import getOS from './get-os.js';
 import getArch from './get-arch.js';
-import getURL from './get-url.js';
+import getURL, {getCandidateURLs} from './get-url.js';
 import {getReleaseAssetURL} from './get-latest-version.js';
 import * as path from 'path';
 import {Tool, Action} from './constants.js';
@@ -48,24 +48,31 @@ export async function installer(version: string): Promise<void> {
   const archName: string = getArch(process.arch);
   core.debug(`Processor Architecture: ${archName}`);
 
-  const toolURL: string = getURL(osName, archName, extended, version);
-  core.debug(`toolURL: ${toolURL}`);
+  const toolURLs = getCandidateURLs(osName, archName, extended, version);
+  core.debug(`toolURL: ${getURL(osName, archName, extended, version)}`);
 
   const workDir = await createWorkDir();
   const binDir = await createBinDir(workDir);
   const tempDir = await createTempDir(workDir);
 
-  let toolAssets: string;
+  let toolAssets = '';
 
-  try {
-    toolAssets = await tc.downloadTool(toolURL);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : `${error}`;
+  for (const candidateURL of toolURLs) {
+    core.debug(`candidateToolURL: ${candidateURL}`);
 
-    if (!message.includes('Unexpected HTTP response: 404')) {
-      throw error;
+    try {
+      toolAssets = await tc.downloadTool(candidateURL);
+      break;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : `${error}`;
+
+      if (!message.includes('Unexpected HTTP response: 404')) {
+        throw error;
+      }
     }
+  }
 
+  if (toolAssets === '') {
     const fallbackToolURL = await getReleaseAssetURL(
       Tool.Org,
       Tool.Repo,
