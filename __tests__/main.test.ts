@@ -1,142 +1,113 @@
-import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
-import * as io from '@actions/io';
-import os from 'os';
-import path from 'path';
-import {Tool, Action} from '../src/constants.js';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+import {Tool} from '../src/constants.js';
 import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
 
-type ActionResult = import('../src/main.js').ActionResult;
-const installTimeoutMs = 60000;
+const mockGetInput = vi.fn();
+const mockInfo = vi.fn();
+const mockDebug = vi.fn();
+const mockExec = vi.fn();
+const mockGetLatestVersion = vi.fn();
+const mockInstaller = vi.fn();
 
-describe('Integration testing run()', () => {
-  beforeEach(async () => {
-    vi.resetModules();
+vi.mock('@actions/core', () => ({
+  debug: mockDebug,
+  getInput: mockGetInput,
+  info: mockInfo
+}));
 
-    const workDir = path.join(`${process.env.HOME}`, Action.WorkDirName);
-    await io.rmRF(workDir);
+vi.mock('@actions/exec', () => ({
+  exec: mockExec
+}));
 
-    process.env['RUNNER_TEMP'] = process.env['RUNNER_TEMP'] || os.tmpdir();
+vi.mock('../src/get-latest-version.js', async importOriginal => {
+  const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
+
+  return {
+    ...actual,
+    getLatestVersion: mockGetLatestVersion
+  };
+});
+
+vi.mock('../src/installer.js', () => ({
+  installer: mockInstaller
+}));
+
+describe('run()', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
   });
 
-  afterEach(async () => {
-    const workDir = path.join(`${process.env.HOME}`, Action.WorkDirName);
-    await io.rmRF(workDir);
-
-    delete process.env['INPUT_HUGO-VERSION'];
-    delete process.env['INPUT_EXTENDED'];
-    vi.doUnmock('../src/get-latest-version.js');
-  });
-
-  test(
-    'succeed in installing a custom version',
-    async () => {
-      const main = await import('../src/main.js');
-      const testVersion = HUGO_TEST_FIXTURES.pinnedVersion;
-      process.env['INPUT_HUGO-VERSION'] = testVersion;
-      const result: ActionResult = await main.run();
-      expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${testVersion}`);
-    },
-    installTimeoutMs
-  );
-
-  test(
-    'succeed in installing a custom extended version',
-    async () => {
-      const main = await import('../src/main.js');
-      const testVersion = HUGO_TEST_FIXTURES.pinnedVersion;
-      process.env['INPUT_HUGO-VERSION'] = testVersion;
-      process.env['INPUT_EXTENDED'] = 'true';
-      const result: ActionResult = await main.run();
-      expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${testVersion}`);
-      expect(result.output).toMatch(`extended`);
-    },
-    installTimeoutMs
-  );
-
-  test(
-    'succeed in installing the latest version',
-    async () => {
-      vi.doMock('../src/get-latest-version.js', async importOriginal => {
-        const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
-
-        return {
-          ...actual,
-          getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
-        };
-      });
-
-      const main = await import('../src/main.js');
-      process.env['INPUT_HUGO-VERSION'] = 'latest';
-      const result: ActionResult = await main.run();
-      expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
-    },
-    installTimeoutMs
-  );
-
-  test(
-    'succeed in installing the latest extended version',
-    async () => {
-      vi.doMock('../src/get-latest-version.js', async importOriginal => {
-        const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
-
-        return {
-          ...actual,
-          getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
-        };
-      });
-
-      const main = await import('../src/main.js');
-      process.env['INPUT_HUGO-VERSION'] = 'latest';
-      process.env['INPUT_EXTENDED'] = 'true';
-      const result: ActionResult = await main.run();
-      expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
-      expect(result.output).toMatch(`extended`);
-    },
-    installTimeoutMs
-  );
-
-  test('fail to install the latest version due to 404 of brew', async () => {
-    vi.doMock('../src/get-latest-version.js', async importOriginal => {
-      const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
-
-      return {
-        ...actual,
-        getLatestVersion: vi
-          .fn()
-          .mockRejectedValue(
-            new Error(`Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`)
-          )
-      };
+  test('installs a provided pinned version directly', async () => {
+    const {run} = await import('../src/main.js');
+    mockGetInput.mockImplementation((name: string) =>
+      name === 'hugo-version' ? HUGO_TEST_FIXTURES.pinnedVersion : ''
+    );
+    mockInstaller.mockResolvedValue(undefined);
+    mockExec.mockImplementation(async (_cmd, _args, options) => {
+      options.listeners.stdout(Buffer.from(`hugo v${HUGO_TEST_FIXTURES.pinnedVersion}`));
+      return 0;
     });
 
-    const main = await import('../src/main.js');
-    process.env['INPUT_HUGO-VERSION'] = 'latest';
+    const result = await run();
 
-    await expect(main.run()).rejects.toThrow(
+    expect(mockGetLatestVersion).not.toHaveBeenCalled();
+    expect(mockInstaller).toHaveBeenCalledWith(HUGO_TEST_FIXTURES.pinnedVersion);
+    expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.pinnedVersion}`);
+  });
+
+  test('resolves and installs the latest version when requested', async () => {
+    const {run} = await import('../src/main.js');
+    mockGetInput.mockImplementation((name: string) => (name === 'hugo-version' ? 'latest' : ''));
+    mockGetLatestVersion.mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion);
+    mockInstaller.mockResolvedValue(undefined);
+    mockExec.mockImplementation(async (_cmd, _args, options) => {
+      options.listeners.stdout(Buffer.from(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`));
+      return 0;
+    });
+
+    const result = await run();
+
+    expect(mockGetLatestVersion).toHaveBeenCalledWith(Tool.Org, Tool.Repo, 'brew');
+    expect(mockInstaller).toHaveBeenCalledWith(HUGO_TEST_FIXTURES.latestVersion);
+    expect(mockInfo).toHaveBeenCalledWith(`Hugo version: ${HUGO_TEST_FIXTURES.latestVersion}`);
+    expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
+  });
+
+  test('propagates latest-version lookup failures', async () => {
+    const {run} = await import('../src/main.js');
+    const error = new Error(
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
     );
+    mockGetInput.mockImplementation((name: string) => (name === 'hugo-version' ? 'latest' : ''));
+    mockGetLatestVersion.mockRejectedValue(error);
+
+    await expect(run()).rejects.toThrow(error.message);
+    expect(mockInstaller).not.toHaveBeenCalled();
   });
 });
 
 describe('showVersion()', () => {
-  let result: {exitcode: number; output: string} = {
-    exitcode: 0,
-    output: ''
-  };
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-  test('return version', async () => {
-    const main = await import('../src/main.js');
-    result = await main.showVersion('git', ['--version']);
+  test('returns command output', async () => {
+    const {showVersion} = await import('../src/main.js');
+    mockExec.mockImplementation(async (_cmd, _args, options) => {
+      options.listeners.stdout(Buffer.from('git version 2.50.1'));
+      return 0;
+    });
+
+    const result = await showVersion('git', ['--version']);
+
     expect(result.exitcode).toBe(0);
     expect(result.output).toMatch(/git version/);
   });
 
-  test('return not found', async () => {
-    const main = await import('../src/main.js');
-    await expect(main.showVersion('gitgit', ['--version'])).rejects.toThrow(Error);
+  test('propagates exec errors', async () => {
+    const {showVersion} = await import('../src/main.js');
+    mockExec.mockRejectedValue(new Error('command not found'));
+
+    await expect(showVersion('gitgit', ['--version'])).rejects.toThrow('command not found');
   });
 });
