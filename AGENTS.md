@@ -1,15 +1,16 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a TypeScript-based GitHub Action for installing Hugo. Source files live in `src/`; `src/index.ts` is the action entrypoint and `src/main.ts` coordinates the install flow. Unit tests live in `__tests__/` with fixture payloads under `__tests__/data/`. Repository metadata and packaging files are at the root, including `action.yml`, `Dockerfile`, `Makefile`, and release helpers such as `release.sh`. Build output is generated into `lib/`, which is the path referenced by `action.yml`.
+This repository is a TypeScript-based GitHub Action for installing Hugo. Source files live in `src/`; `src/index.ts` is the action entrypoint and `src/main.ts` coordinates the install flow. Tests live in `__tests__/` with fixture payloads under `__tests__/data/`. Repository metadata and packaging files are at the root, including `action.yml`, `Dockerfile`, `Makefile`, `.releaserc.json`, and the workflow definitions under `.github/workflows`. Build output is generated into `lib/`, which is the path referenced by `action.yml`.
 
 ## Build, Test, and Development Commands
-Use Node `20.10+` and npm `10.2+` as declared in `package.json`.
+Use Node `24.10+` and npm `10.2+` as declared in `package.json`.
 
-- `npm test`: run Jest with coverage and verbose output.
+- `npm test`: run Vitest with coverage.
 - `npm run lint`: lint all TypeScript in `src/` and `__tests__/`.
 - `npm run format:check`: verify Prettier formatting.
 - `npm run build`: bundle the action with `@vercel/ncc` into `lib/`.
+- `npm run release:dry-run`: load the semantic-release configuration and validate the release flow up to the remote GitHub boundary.
 - `npm run all`: run format check, lint, and tests in one pass.
 - `make test` or `make all`: run the same checks inside the project’s Docker image.
 
@@ -17,7 +18,7 @@ Use Node `20.10+` and npm `10.2+` as declared in `package.json`.
 Follow `.editorconfig` and Prettier defaults: 2-space indentation, LF endings, UTF-8, trailing newline, semicolons, single quotes, and a 100-character line width. Keep TypeScript modules focused and prefer small helpers such as `get-os.ts` and `get-arch.ts`. Use kebab-case for file names and `*.test.ts` for test files. Let ESLint and Prettier drive formatting instead of hand-formatting.
 
 ## Testing Guidelines
-Tests use Jest with `ts-jest` and match `**/*.test.ts`. Add unit tests beside existing suites in `__tests__/`, and store reusable API fixtures in `__tests__/data/` when mocking external responses. Run `npm test` before opening a PR; `npm run all` is the expected pre-push check. Coverage is collected automatically, even though no explicit threshold is enforced.
+Tests use Vitest and match `**/*.test.ts`. Add unit tests beside existing suites in `__tests__/`, and store reusable API fixtures in `__tests__/data/` when mocking external responses. Run `npm test` before opening a PR; `npm run all` is the expected pre-push check. Coverage is collected automatically, even though no explicit threshold is enforced.
 
 ## Commit & Pull Request Guidelines
 Recent history follows Conventional Commit style, for example `feat: bump to use node20 runtime`, `docs: update cache usage`, and `ci: bump actions/upload-artifact from 3 to 4`. Keep subjects imperative and scoped when useful, such as `fix(doc): ...` or `chore(release): ...`. PRs should include a short description, link the relevant issue when applicable, and note user-visible changes to the action, README, or generated `lib/` bundle.
