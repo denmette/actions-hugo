@@ -1,5 +1,4 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
 
 if git diff --cached --name-only | grep -Eq '^(src/|package\.json|package-lock\.json|tsconfig\.json|action\.yml|\.nvmrc)$'; then
   npm run build
