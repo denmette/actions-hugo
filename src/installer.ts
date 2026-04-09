@@ -4,6 +4,7 @@ import * as io from '@actions/io';
 import getOS from './get-os.js';
 import getArch from './get-arch.js';
 import getURL from './get-url.js';
+import {getReleaseAssetURL} from './get-latest-version.js';
 import * as path from 'path';
 import {Tool, Action} from './constants.js';
 
@@ -60,7 +61,29 @@ export async function installer(version: string): Promise<void> {
   const binDir = await createBinDir(workDir);
   const tempDir = await createTempDir(workDir);
 
-  const toolAssets: string = await tc.downloadTool(toolURL);
+  let toolAssets = '';
+
+  try {
+    toolAssets = await tc.downloadTool(toolURL);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : `${error}`;
+
+    if (!message.includes('Unexpected HTTP response: 404')) {
+      throw error;
+    }
+
+    const fallbackToolURL = await getReleaseAssetURL(
+      Tool.Org,
+      Tool.Repo,
+      osName,
+      archName,
+      extended,
+      version
+    );
+    core.debug(`fallbackToolURL: ${fallbackToolURL}`);
+    toolAssets = await tc.downloadTool(fallbackToolURL);
+  }
+
   let toolBin = '';
   if (process.platform === 'win32') {
     const toolExtractedFolder: string = await tc.extractZip(toolAssets, tempDir);
