@@ -58,9 +58,14 @@ describe('Integration testing run()', () => {
   test(
     'succeed in installing the latest version',
     async () => {
-      vi.doMock('../src/get-latest-version.js', () => ({
-        getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
-      }));
+      vi.doMock('../src/get-latest-version.js', async importOriginal => {
+        const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
+
+        return {
+          ...actual,
+          getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
+        };
+      });
 
       const main = await import('../src/main.js');
       process.env['INPUT_HUGO-VERSION'] = 'latest';
@@ -74,9 +79,14 @@ describe('Integration testing run()', () => {
   test(
     'succeed in installing the latest extended version',
     async () => {
-      vi.doMock('../src/get-latest-version.js', () => ({
-        getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
-      }));
+      vi.doMock('../src/get-latest-version.js', async importOriginal => {
+        const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
+
+        return {
+          ...actual,
+          getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
+        };
+      });
 
       const main = await import('../src/main.js');
       process.env['INPUT_HUGO-VERSION'] = 'latest';
@@ -90,13 +100,18 @@ describe('Integration testing run()', () => {
   );
 
   test('fail to install the latest version due to 404 of brew', async () => {
-    vi.doMock('../src/get-latest-version.js', () => ({
-      getLatestVersion: vi
-        .fn()
-        .mockRejectedValue(
-          new Error(`Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`)
-        )
-    }));
+    vi.doMock('../src/get-latest-version.js', async importOriginal => {
+      const actual = await importOriginal<typeof import('../src/get-latest-version.js')>();
+
+      return {
+        ...actual,
+        getLatestVersion: vi
+          .fn()
+          .mockRejectedValue(
+            new Error(`Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`)
+          )
+      };
+    });
 
     const main = await import('../src/main.js');
     process.env['INPUT_HUGO-VERSION'] = 'latest';
