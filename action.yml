@@ -1,4 +1,4 @@
-name: 'Hugo setup'
+name: 'Hugo Setup Fork'
 description: 'GitHub Actions for Hugo ⚡️ Setup Hugo quickly and build your site fast. Hugo extended and Hugo Modules are supported.'
 author: 'denmette'
 inputs:
