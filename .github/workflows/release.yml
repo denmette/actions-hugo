@@ -2,29 +2,40 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*.*.*'
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
     runs-on: ubuntu-22.04
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: Create release
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Verify committed bundle is up to date
+        run: git diff --exit-code -- lib
+
+      - name: Run semantic-release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          TAG_NAME="${GITHUB_REF##refs/tags/}"
-          RELEASE_NAME="$(jq -r '.name' ./package.json)"
-          {
-            printf '%s %s\n\n' "${RELEASE_NAME}" "${TAG_NAME}"
-            printf 'See [CHANGELOG.md](https://github.com/%s/blob/%s/CHANGELOG.md) for more details.\n' "${GITHUB_REPOSITORY}" "${TAG_NAME}"
-          } > ./release_notes.md
-          gh release create "${TAG_NAME}" \
-            --draft \
-            --prerelease \
-            --notes-file ./release_notes.md \
-            --title "${RELEASE_NAME} ${TAG_NAME}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
