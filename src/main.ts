@@ -32,22 +32,12 @@ export async function showVersion(cmd: string, args: string[]): Promise<ActionRe
 
 export async function run(): Promise<ActionResult> {
   const toolVersion: string = core.getInput('hugo-version');
-  let installVersion = '';
-
-  let result: ActionResult = {
-    exitcode: 0,
-    output: ''
-  };
-
-  if (toolVersion === '' || toolVersion === 'latest') {
-    installVersion = await getLatestVersion(Tool.Org, Tool.Repo, 'brew');
-  } else {
-    installVersion = toolVersion;
-  }
+  const installVersion =
+    toolVersion === '' || toolVersion === 'latest'
+      ? await getLatestVersion(Tool.Org, Tool.Repo, 'brew')
+      : toolVersion;
 
   core.info(`${Tool.Name} version: ${installVersion}`);
   await installer(installVersion);
-  result = await showVersion(Tool.CmdName, [Tool.CmdOptVersion]);
-
-  return result;
+  return await showVersion(Tool.CmdName, [Tool.CmdOptVersion]);
 }
