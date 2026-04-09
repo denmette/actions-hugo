@@ -1,10 +1,10 @@
 ---
 id: TASK-22
 title: Investigate macOS and Windows 404 failures in the manual action compatibility matrix
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-04-09 07:13'
-updated_date: '2026-04-09 07:13'
+updated_date: '2026-04-09 08:03'
 labels:
   - github-actions
   - ci
@@ -23,10 +23,10 @@ Investigate the `Unexpected HTTP response: 404` failures reported in the broader
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 The failing compatibility combinations are reproduced or inspected closely enough to identify whether the 404 originates from Hugo asset naming, platform mapping, or another runtime assumption.
-- [ ] #2 If a code fix is appropriate, the asset-resolution or install logic is updated and validated for the affected platforms.
-- [ ] #3 If the failure is due to unsupported upstream assets, the manual compatibility matrix or repository documentation is updated to reflect the real support boundary.
-- [ ] #4 The task records the outcome clearly so future workflow maintenance does not reintroduce the same ambiguous matrix entries.
+- [x] #1 The failing compatibility combinations are reproduced or inspected closely enough to identify whether the 404 originates from Hugo asset naming, platform mapping, or another runtime assumption.
+- [x] #2 If a code fix is appropriate, the asset-resolution or install logic is updated and validated for the affected platforms.
+- [x] #3 If the failure is due to unsupported upstream assets, the manual compatibility matrix or repository documentation is updated to reflect the real support boundary.
+- [x] #4 The task records the outcome clearly so future workflow maintenance does not reintroduce the same ambiguous matrix entries.
 <!-- AC:END -->
 
 ## Implementation Notes
@@ -34,4 +34,8 @@ Investigate the `Unexpected HTTP response: 404` failures reported in the broader
 <!-- SECTION:NOTES:BEGIN -->
 2026-04-09: Follow-up created from `TASK-20`. Scheduled daily coverage was reduced to a stable Ubuntu smoke path because Ubuntu remained healthy while `macos-latest` and `windows-latest` reported `Unexpected HTTP response: 404` across the `latest` compatibility variants. This task keeps that investigation visible without blocking the workflow-structure cleanup.
 2026-04-09: Maintainer support policy for the compatibility matrix: keep `latest` as a required success path across supported operating systems, and keep at most one additional pinned Hugo version from roughly the last year for backward-compatibility coverage. Versions older than that are no longer part of the maintained support baseline unless a separate task reintroduces them intentionally.
+2026-04-09: Implementation plan: keep the existing direct download URL pattern for older releases, but when GitHub returns a 404, fall back to the GitHub release asset list and select the actual archive name for the requested OS, architecture, and extended flag. This should restore `latest` on macOS and Windows without breaking older release tags that still match the legacy filename convention.
+2026-04-09: Root cause confirmed in code: the installer still generated legacy archive names directly (`macOS-ARM64`, `Windows-64bit`, etc.). Current Hugo releases still publish older aliases for some platforms, but `latest` on macOS and Windows can require newer asset names such as `darwin-universal` and `windows-amd64`. The installer now falls back to the GitHub release asset list when the legacy URL returns a 404 and selects the actual compatible archive for the requested platform.
+2026-04-09: Validation under the Node 24 baseline: `npm run lint`, `npm run tsc`, and targeted Vitest coverage for `__tests__/get-latest-version.test.ts` plus `__tests__/get-url.test.ts` passed. A full integration rerun was attempted with `HOME=/tmp RUNNER_TEMP=/tmp`, but the sandbox could not resolve `github.com`, so the remaining integration failures were environmental rather than code failures.
+2026-04-09: Follow-up hardening added in the same task: the Husky pre-commit hook now rebuilds and re-stages `lib/index.js` and `lib/package.json` automatically whenever staged changes touch `src/`, package metadata, `tsconfig.json`, `action.yml`, or `.nvmrc`. This reduces repeated CI failures where the runtime code changed but the committed bundle was left stale.
 <!-- SECTION:NOTES:END -->
