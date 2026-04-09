@@ -427,6 +427,13 @@ env RUNNER_TEMP=/tmp npm test
 
 The repository test suite now runs on Vitest so the test runner stays aligned with the ESM and TypeScript setup without extra CommonJS bootstrap files.
 
+Workflow structure:
+- `test.yml` is the primary push and pull request validation workflow. It owns formatting, linting, type-checking, bundle verification, and the full Vitest suite.
+- `test-action.yml` verifies the published local action entrypoint. The scheduled run is a smaller daily smoke matrix, while `workflow_dispatch` keeps the broader compatibility matrix for manual checks.
+- `release.yml` and `update-major-tag.yml` own release publication and moving major tags after a published release.
+- `dependency-review.yml`, `codeql-analysis.yml`, and `conventional-pr.yml` are repository policy and security checks.
+- `dev-image.yml`, `label-commenter.yml`, and `purge-readme-image-cache.yml` are maintenance workflows and intentionally stay outside the main validation path.
+
 Pull request titles are expected to follow the Conventional Commits format because repository automation validates the PR title directly. This check is separate from release automation, so `semantic-release` can stay focused on actual release tagging and notes later. Examples: `fix: repair bundle output`, `feat(ci): add semantic release`, `chore(deps): update eslint`.
 
 Release tagging and GitHub release publication are handled by `semantic-release` on `main`; the old manual `release.sh` flow is no longer the primary path.

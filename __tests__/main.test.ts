@@ -5,6 +5,7 @@ import path from 'path';
 import {Tool, Action} from '../src/constants.js';
 
 type ActionResult = import('../src/main.js').ActionResult;
+const installTimeoutMs = 60000;
 
 describe('Integration testing run()', () => {
   beforeEach(async () => {
@@ -25,51 +26,67 @@ describe('Integration testing run()', () => {
     vi.doUnmock('../src/get-latest-version.js');
   });
 
-  test('succeed in installing a custom version', async () => {
-    const main = await import('../src/main.js');
-    const testVersion = Tool.TestVersionSpec;
-    process.env['INPUT_HUGO-VERSION'] = testVersion;
-    const result: ActionResult = await main.run();
-    expect(result.exitcode).toBe(0);
-    expect(result.output).toMatch(`hugo v${testVersion}`);
-  });
+  test(
+    'succeed in installing a custom version',
+    async () => {
+      const main = await import('../src/main.js');
+      const testVersion = Tool.TestVersionSpec;
+      process.env['INPUT_HUGO-VERSION'] = testVersion;
+      const result: ActionResult = await main.run();
+      expect(result.exitcode).toBe(0);
+      expect(result.output).toMatch(`hugo v${testVersion}`);
+    },
+    installTimeoutMs
+  );
 
-  test('succeed in installing a custom extended version', async () => {
-    const main = await import('../src/main.js');
-    const testVersion = Tool.TestVersionSpec;
-    process.env['INPUT_HUGO-VERSION'] = testVersion;
-    process.env['INPUT_EXTENDED'] = 'true';
-    const result: ActionResult = await main.run();
-    expect(result.exitcode).toBe(0);
-    expect(result.output).toMatch(`hugo v${testVersion}`);
-    expect(result.output).toMatch(`extended`);
-  });
+  test(
+    'succeed in installing a custom extended version',
+    async () => {
+      const main = await import('../src/main.js');
+      const testVersion = Tool.TestVersionSpec;
+      process.env['INPUT_HUGO-VERSION'] = testVersion;
+      process.env['INPUT_EXTENDED'] = 'true';
+      const result: ActionResult = await main.run();
+      expect(result.exitcode).toBe(0);
+      expect(result.output).toMatch(`hugo v${testVersion}`);
+      expect(result.output).toMatch(`extended`);
+    },
+    installTimeoutMs
+  );
 
-  test('succeed in installing the latest version', async () => {
-    vi.doMock('../src/get-latest-version.js', () => ({
-      getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
-    }));
+  test(
+    'succeed in installing the latest version',
+    async () => {
+      vi.doMock('../src/get-latest-version.js', () => ({
+        getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+      }));
 
-    const main = await import('../src/main.js');
-    process.env['INPUT_HUGO-VERSION'] = 'latest';
-    const result: ActionResult = await main.run();
-    expect(result.exitcode).toBe(0);
-    expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
-  });
+      const main = await import('../src/main.js');
+      process.env['INPUT_HUGO-VERSION'] = 'latest';
+      const result: ActionResult = await main.run();
+      expect(result.exitcode).toBe(0);
+      expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
+    },
+    installTimeoutMs
+  );
 
-  test('succeed in installing the latest extended version', async () => {
-    vi.doMock('../src/get-latest-version.js', () => ({
-      getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
-    }));
+  test(
+    'succeed in installing the latest extended version',
+    async () => {
+      vi.doMock('../src/get-latest-version.js', () => ({
+        getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+      }));
 
-    const main = await import('../src/main.js');
-    process.env['INPUT_HUGO-VERSION'] = 'latest';
-    process.env['INPUT_EXTENDED'] = 'true';
-    const result: ActionResult = await main.run();
-    expect(result.exitcode).toBe(0);
-    expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
-    expect(result.output).toMatch(`extended`);
-  });
+      const main = await import('../src/main.js');
+      process.env['INPUT_HUGO-VERSION'] = 'latest';
+      process.env['INPUT_EXTENDED'] = 'true';
+      const result: ActionResult = await main.run();
+      expect(result.exitcode).toBe(0);
+      expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
+      expect(result.output).toMatch(`extended`);
+    },
+    installTimeoutMs
+  );
 
   test('fail to install the latest version due to 404 of brew', async () => {
     vi.doMock('../src/get-latest-version.js', () => ({
