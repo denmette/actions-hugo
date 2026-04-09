@@ -62,10 +62,10 @@ jobs:
 
       - name: Upload test coverage as artifact
         if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}
           path: coverage
 
       - if: matrix.os == 'ubuntu-22.04'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
