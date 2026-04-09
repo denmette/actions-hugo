@@ -3,9 +3,7 @@ export const Tool = {
   Org: 'gohugoio',
   Repo: 'hugo',
   CmdName: 'hugo',
-  CmdOptVersion: 'version',
-  TestVersionLatest: '0.83.1',
-  TestVersionSpec: '0.82.1'
+  CmdOptVersion: 'version'
 } as const;
 
 export const Action = {

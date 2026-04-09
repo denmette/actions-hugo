@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {getURL, getLatestVersion, getReleaseAssetURL} from '../src/get-latest-version.js';
 import {Tool} from '../src/constants.js';
+import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
 
 const mockGet = vi.fn();
 
@@ -42,11 +43,11 @@ describe('getLatestVersion()', () => {
       },
       readBody: vi
         .fn()
-        .mockResolvedValue(JSON.stringify({versions: {stable: Tool.TestVersionLatest}}))
+        .mockResolvedValue(JSON.stringify({versions: {stable: HUGO_TEST_FIXTURES.latestVersion}}))
     });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'brew');
-    expect(versionLatest).toMatch(Tool.TestVersionLatest);
+    expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
   });
 
   test('return latest version via GitHub', async () => {
@@ -55,11 +56,13 @@ describe('getLatestVersion()', () => {
         statusCode: 200,
         statusMessage: 'OK'
       },
-      readBody: vi.fn().mockResolvedValue(JSON.stringify({tag_name: Tool.TestVersionLatest}))
+      readBody: vi
+        .fn()
+        .mockResolvedValue(JSON.stringify({tag_name: HUGO_TEST_FIXTURES.latestVersion}))
     });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'github');
-    expect(versionLatest).toMatch(Tool.TestVersionLatest);
+    expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
   });
 
   test('return exception 404', async () => {
@@ -79,6 +82,9 @@ describe('getLatestVersion()', () => {
 
 describe('getReleaseAssetURL()', () => {
   test('fall back to current darwin universal asset naming', async () => {
+    const version = HUGO_TEST_FIXTURES.latestVersion;
+    const downloadURL = `https://github.com/gohugoio/hugo/releases/download/v${version}/hugo_extended_${version}_darwin-universal.tar.gz`;
+
     mockGet.mockResolvedValue({
       message: {
         statusCode: 200,
@@ -88,9 +94,8 @@ describe('getReleaseAssetURL()', () => {
         JSON.stringify({
           assets: [
             {
-              browser_download_url:
-                'https://github.com/gohugoio/hugo/releases/download/v0.160.1/hugo_extended_0.160.1_darwin-universal.tar.gz',
-              name: 'hugo_extended_0.160.1_darwin-universal.tar.gz'
+              browser_download_url: downloadURL,
+              name: `hugo_extended_${version}_darwin-universal.tar.gz`
             }
           ]
         })
@@ -98,13 +103,14 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'true', '0.160.1')
-    ).resolves.toBe(
-      'https://github.com/gohugoio/hugo/releases/download/v0.160.1/hugo_extended_0.160.1_darwin-universal.tar.gz'
-    );
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'true', version)
+    ).resolves.toBe(downloadURL);
   });
 
   test('fall back to current windows amd64 asset naming', async () => {
+    const version = HUGO_TEST_FIXTURES.latestVersion;
+    const downloadURL = `https://github.com/gohugoio/hugo/releases/download/v${version}/hugo_${version}_windows-amd64.zip`;
+
     mockGet.mockResolvedValue({
       message: {
         statusCode: 200,
@@ -114,9 +120,8 @@ describe('getReleaseAssetURL()', () => {
         JSON.stringify({
           assets: [
             {
-              browser_download_url:
-                'https://github.com/gohugoio/hugo/releases/download/v0.160.1/hugo_0.160.1_windows-amd64.zip',
-              name: 'hugo_0.160.1_windows-amd64.zip'
+              browser_download_url: downloadURL,
+              name: `hugo_${version}_windows-amd64.zip`
             }
           ]
         })
@@ -124,13 +129,13 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'Windows', '64bit', 'false', '0.160.1')
-    ).resolves.toBe(
-      'https://github.com/gohugoio/hugo/releases/download/v0.160.1/hugo_0.160.1_windows-amd64.zip'
-    );
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'Windows', '64bit', 'false', version)
+    ).resolves.toBe(downloadURL);
   });
 
   test('throw when no compatible asset exists', async () => {
+    const version = HUGO_TEST_FIXTURES.latestVersion;
+
     mockGet.mockResolvedValue({
       message: {
         statusCode: 200,
@@ -140,7 +145,7 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'false', '0.160.1')
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'false', version)
     ).rejects.toThrow('No compatible release asset found');
   });
 });
