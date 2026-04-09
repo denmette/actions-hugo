@@ -12,6 +12,7 @@ Use Node `24.10+` and npm `10.2+` as declared in `package.json`.
 - `npm run build`: bundle the action with `@vercel/ncc` into `lib/`.
 - `npm run release:dry-run`: load the semantic-release configuration and validate the release flow up to the remote GitHub boundary.
 - `npm run all`: run format check, lint, and tests in one pass.
+- `npm install`: installs dependencies and refreshes the local Husky hooks automatically.
 - `make test` or `make all`: run the same checks inside the project’s Docker image.
 
 ## Coding Style & Naming Conventions

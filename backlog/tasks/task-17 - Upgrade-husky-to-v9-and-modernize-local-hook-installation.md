@@ -1,10 +1,10 @@
 ---
 id: TASK-17
 title: Upgrade Husky to v9 and modernize local hook installation
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-04-08 16:25'
-updated_date: '2026-04-08 16:25'
+updated_date: '2026-04-09 10:11'
 labels:
   - dependencies
   - developer-experience
@@ -22,14 +22,15 @@ Upgrade Husky from the current v5 line to v9 and modernize the repository's loca
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Husky is upgraded to v9 with a supported hook installation flow.
-- [ ] #2 Existing local hook behavior remains functional after the upgrade.
-- [ ] #3 `package.json` scripts and any `.husky/` files are updated coherently for the new Husky line.
-- [ ] #4 Local contributor setup remains understandable and documented after the migration.
+- [x] #1 Husky is upgraded to v9 with a supported hook installation flow.
+- [x] #2 Existing local hook behavior remains functional after the upgrade.
+- [x] #3 `package.json` scripts and any `.husky/` files are updated coherently for the new Husky line.
+- [x] #4 Local contributor setup remains understandable and documented after the migration.
 <!-- AC:END -->
 
 ## Implementation Notes
 
 <!-- SECTION:NOTES:BEGIN -->
 2026-04-08: Relevant Renovate pressure from the current queue includes `husky -> v9` plus stale `husky -> v5.2.0` noise. `lint-staged -> v16` is already satisfied and should not be treated as a new open upgrade.
+2026-04-09: Completed as part of `TASK-16` so the TypeScript 6 and repository-tooling changes could land together. Husky is now on `9.1.7`, `package.json` uses the `husky` install command, and the `.husky/` hook files were simplified to the current format while preserving the bundle rebuild and lint-staged behavior.
 <!-- SECTION:NOTES:END -->
