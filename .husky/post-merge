@@ -1,4 +1,28 @@
 #!/bin/sh
 
-npm ci
-git remote prune origin
+set -u
+
+dependency_files='package.json package-lock.json .nvmrc'
+
+dependency_files_changed() {
+  if git rev-parse -q --verify ORIG_HEAD >/dev/null 2>&1; then
+    changed_files=$(git diff --name-only ORIG_HEAD HEAD -- $dependency_files)
+  else
+    changed_files=$(git diff-tree --no-commit-id --name-only -r HEAD -- $dependency_files)
+  fi
+
+  [ -n "$changed_files" ]
+}
+
+if dependency_files_changed; then
+  echo 'post-merge: dependency files changed, refreshing local install with npm ci'
+  if ! npm ci; then
+    echo 'post-merge: npm ci failed after dependency changes'
+    echo 'post-merge: pull/rebase completed, but your local dependencies may be out of sync'
+    echo 'post-merge: run `nvm use 24 && npm install` manually once the branch state is settled'
+  fi
+fi
+
+if ! git remote prune origin; then
+  echo 'post-merge: git remote prune origin failed'
+fi
