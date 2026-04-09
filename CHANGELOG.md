@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project are recorded here. Historical entries still reflect the upstream project context they were generated from, while future entries are maintained by semantic-release for this fork's GitHub releases and changelog automation.
 
 # [3.0.0](https://github.com/peaceiris/actions-hugo/compare/v2.6.0...v3.0.0) (2024-04-02)
 

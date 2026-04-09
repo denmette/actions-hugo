@@ -429,15 +429,16 @@ The repository test suite now runs on Vitest so the test runner stays aligned wi
 
 Pull request titles are expected to follow the Conventional Commits format because repository automation validates the PR title directly. This check is separate from release automation, so `semantic-release` can stay focused on actual release tagging and notes later. Examples: `fix: repair bundle output`, `feat(ci): add semantic release`, `chore(deps): update eslint`.
 
+Release tagging and GitHub release publication are handled by `semantic-release` on `main`; the old manual `release.sh` flow is no longer the primary path.
+The local dry-run command is `npm run release:dry-run`. In restricted local environments it may stop when `semantic-release` tries to query the remote repository; that is expected as long as config and plugin loading succeed before the network boundary.
+The release toolchain may still carry some transitive audit findings from upstream `semantic-release` dependencies. Those are tracked as dependency-hygiene follow-up work rather than a reason to keep the older manual release flow.
+
 Run `npm test` on a Docker container.
 
 ```sh
 # On container
 make build
 make all
-
-# Release script on host
-./release.sh
 ```
 
 
