@@ -23,8 +23,7 @@
       "matchPackageNames": ["node", "@types/node"],
       "matchUpdateTypes": ["major"],
       "groupName": "node-runtime-major",
-      "groupSlug": "node-runtime-major",
-      "separateMajorMinor": true
+      "groupSlug": "node-runtime-major"
     },
     {
       "description": "Keep supported Node baseline maintenance updates together without mixing them with broader tooling work.",
