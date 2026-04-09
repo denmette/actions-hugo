@@ -13,6 +13,7 @@ Use Node `24.10+` and npm `10.2+` as declared in `package.json`.
 - `npm run release:dry-run`: load the semantic-release configuration and validate the release flow up to the remote GitHub boundary.
 - `npm run all`: run format check, lint, and tests in one pass.
 - `npm install`: installs dependencies and refreshes the local Husky hooks automatically.
+- `git pull --rebase`: the post-merge hook only refreshes dependencies when `package.json`, `package-lock.json`, or `.nvmrc` changed, and it warns instead of failing the pull if `npm ci` cannot complete.
 - `make test` or `make all`: run the same checks inside the project’s Docker image.
 
 ## Coding Style & Naming Conventions
