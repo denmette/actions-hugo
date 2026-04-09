@@ -6,7 +6,7 @@
   "main": "lib/index.js",
   "engines": {
     "node": ">=24.14.1",
-    "npm": ">=10.2.3"
+    "npm": ">=10.9.8"
   },
   "scripts": {
     "all": "npm run format:check && npm run lint && npm test",
