@@ -9,17 +9,11 @@ import * as path from 'path';
 import {Tool, Action} from './constants.js';
 
 export function getHomeDir(): string {
-  let homedir = '';
-
   if (process.platform === 'win32') {
-    homedir = process.env['USERPROFILE'] || 'C:\\';
+    return process.env['USERPROFILE'] || 'C:\\';
   } else {
-    homedir = `${process.env.HOME}`;
+    return `${process.env.HOME}`;
   }
-
-  core.debug(`homeDir: ${homedir}`);
-
-  return homedir;
 }
 
 export async function createWorkDir(): Promise<string> {
@@ -61,7 +55,7 @@ export async function installer(version: string): Promise<void> {
   const binDir = await createBinDir(workDir);
   const tempDir = await createTempDir(workDir);
 
-  let toolAssets = '';
+  let toolAssets: string;
 
   try {
     toolAssets = await tc.downloadTool(toolURL);
@@ -84,13 +78,10 @@ export async function installer(version: string): Promise<void> {
     toolAssets = await tc.downloadTool(fallbackToolURL);
   }
 
-  let toolBin = '';
-  if (process.platform === 'win32') {
-    const toolExtractedFolder: string = await tc.extractZip(toolAssets, tempDir);
-    toolBin = `${toolExtractedFolder}/${Tool.CmdName}.exe`;
-  } else {
-    const toolExtractedFolder: string = await tc.extractTar(toolAssets, tempDir);
-    toolBin = `${toolExtractedFolder}/${Tool.CmdName}`;
-  }
+  const toolBin =
+    process.platform === 'win32'
+      ? `${await tc.extractZip(toolAssets, tempDir)}/${Tool.CmdName}.exe`
+      : `${await tc.extractTar(toolAssets, tempDir)}/${Tool.CmdName}`;
+
   await io.mv(toolBin, binDir);
 }
