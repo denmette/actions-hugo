@@ -5,9 +5,11 @@ import {Tool} from '../src/constants.js';
 const mockGet = vi.fn();
 
 vi.mock('@actions/http-client', () => ({
-  HttpClient: vi.fn().mockImplementation(() => ({
-    get: mockGet
-  }))
+  HttpClient: vi.fn().mockImplementation(function () {
+    return {
+      get: mockGet
+    };
+  })
 }));
 
 beforeEach(() => {

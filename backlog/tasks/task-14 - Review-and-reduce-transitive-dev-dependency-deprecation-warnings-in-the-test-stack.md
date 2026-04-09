@@ -4,7 +4,7 @@ title: Review and reduce transitive dev dependency deprecation warnings in the t
 status: Done
 assignee: []
 created_date: '2026-04-08 16:18'
-updated_date: '2026-04-09 08:17'
+updated_date: '2026-04-09 09:41'
 labels:
   - dependencies
   - test
@@ -35,4 +35,7 @@ Review remaining transitive deprecation warnings in the development and test dep
 2026-04-08: Current `npm install` warns about `glob@10.5.0`, which is pulled in via `@vitest/coverage-istanbul -> test-exclude -> glob`. `npm audit --json` still reports only the separate transitive `lodash` advisory from `standard-version`, so this warning is not currently an active audit blocker, but it should still be tracked for cleanup.
 2026-04-09: Review under the current Node 24 baseline shows the dependency path is still `@vitest/coverage-istanbul -> test-exclude -> glob@10.5.0`, while the semantic-release plugin set brings its own separate `lodash` transitive path. A fresh `npm install --foreground-scripts` is currently quiet and no longer emits the earlier `glob@10.5.0` deprecation warning in this repository state, so there is no safe high-value package bump to force here right now.
 2026-04-09: Because the install flow is already stable and quiet, this task is closed as reviewed/documented rather than by introducing speculative dependency churn. If the warning returns in a later lockfile refresh, it should be handled alongside the specific upstream package that reintroduces it.
+2026-04-09: Reopened after the warning was reproduced on the real `git pull --rebase` path via the Husky `post-merge` hook running `npm ci`. Current investigation shows the clean upstream fix path is a Vitest stack bump: `@vitest/coverage-istanbul@4.1.4` no longer depends on `test-exclude`, and `vitest@4.1.4` is the matching peer line.
+2026-04-09: Completed by upgrading `vitest` and `@vitest/coverage-istanbul` to `4.1.4`, which removes the old `test-exclude -> glob@10.5.0` path entirely. The `@actions/http-client` mock in `__tests__/get-latest-version.test.ts` also needed a constructor-style implementation to stay compatible with Vitest 4.
+2026-04-09: Validation after the upgrade: `npm ls glob test-exclude @vitest/coverage-istanbul vitest --all` no longer shows the `glob@10.5.0` path, `npm ci --foreground-scripts` is clean apart from the existing audit summary, and `npm run format:check`, `npm run lint`, `npm run tsc`, and targeted static Vitest runs all pass under Node 24.
 <!-- SECTION:NOTES:END -->
