@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {getURL, getLatestVersion, getReleaseAssetURL} from '../src/get-latest-version.js';
 import {Tool} from '../src/constants.js';
+import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
 
 const mockGet = vi.fn();
 
@@ -42,11 +43,11 @@ describe('getLatestVersion()', () => {
       },
       readBody: vi
         .fn()
-        .mockResolvedValue(JSON.stringify({versions: {stable: Tool.TestVersionLatest}}))
+        .mockResolvedValue(JSON.stringify({versions: {stable: HUGO_TEST_FIXTURES.latestVersion}}))
     });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'brew');
-    expect(versionLatest).toMatch(Tool.TestVersionLatest);
+    expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
   });
 
   test('return latest version via GitHub', async () => {
@@ -55,11 +56,13 @@ describe('getLatestVersion()', () => {
         statusCode: 200,
         statusMessage: 'OK'
       },
-      readBody: vi.fn().mockResolvedValue(JSON.stringify({tag_name: Tool.TestVersionLatest}))
+      readBody: vi
+        .fn()
+        .mockResolvedValue(JSON.stringify({tag_name: HUGO_TEST_FIXTURES.latestVersion}))
     });
 
     const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'github');
-    expect(versionLatest).toMatch(Tool.TestVersionLatest);
+    expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
   });
 
   test('return exception 404', async () => {

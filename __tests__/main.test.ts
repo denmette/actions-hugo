@@ -3,6 +3,7 @@ import * as io from '@actions/io';
 import os from 'os';
 import path from 'path';
 import {Tool, Action} from '../src/constants.js';
+import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
 
 type ActionResult = import('../src/main.js').ActionResult;
 const installTimeoutMs = 60000;
@@ -30,7 +31,7 @@ describe('Integration testing run()', () => {
     'succeed in installing a custom version',
     async () => {
       const main = await import('../src/main.js');
-      const testVersion = Tool.TestVersionSpec;
+      const testVersion = HUGO_TEST_FIXTURES.pinnedVersion;
       process.env['INPUT_HUGO-VERSION'] = testVersion;
       const result: ActionResult = await main.run();
       expect(result.exitcode).toBe(0);
@@ -43,7 +44,7 @@ describe('Integration testing run()', () => {
     'succeed in installing a custom extended version',
     async () => {
       const main = await import('../src/main.js');
-      const testVersion = Tool.TestVersionSpec;
+      const testVersion = HUGO_TEST_FIXTURES.pinnedVersion;
       process.env['INPUT_HUGO-VERSION'] = testVersion;
       process.env['INPUT_EXTENDED'] = 'true';
       const result: ActionResult = await main.run();
@@ -58,14 +59,14 @@ describe('Integration testing run()', () => {
     'succeed in installing the latest version',
     async () => {
       vi.doMock('../src/get-latest-version.js', () => ({
-        getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+        getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
       }));
 
       const main = await import('../src/main.js');
       process.env['INPUT_HUGO-VERSION'] = 'latest';
       const result: ActionResult = await main.run();
       expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
+      expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
     },
     installTimeoutMs
   );
@@ -74,7 +75,7 @@ describe('Integration testing run()', () => {
     'succeed in installing the latest extended version',
     async () => {
       vi.doMock('../src/get-latest-version.js', () => ({
-        getLatestVersion: vi.fn().mockResolvedValue(Tool.TestVersionLatest)
+        getLatestVersion: vi.fn().mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion)
       }));
 
       const main = await import('../src/main.js');
@@ -82,7 +83,7 @@ describe('Integration testing run()', () => {
       process.env['INPUT_EXTENDED'] = 'true';
       const result: ActionResult = await main.run();
       expect(result.exitcode).toBe(0);
-      expect(result.output).toMatch(`hugo v${Tool.TestVersionLatest}`);
+      expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
       expect(result.output).toMatch(`extended`);
     },
     installTimeoutMs
