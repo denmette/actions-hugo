@@ -55,6 +55,56 @@ describe('Integration: run()', () => {
     if (fs.existsSync(tempDir)) {
       fs.rmSync(tempDir, {recursive: true, force: true});
     }
+    // Restore platform/arch defaults if they were modified
+    Object.defineProperty(process, 'platform', {value: process.platform});
+    Object.defineProperty(process, 'arch', {value: process.arch});
+  });
+
+  test('full successful flow for latest version on macOS', async () => {
+    // Force macOS platform
+    Object.defineProperty(process, 'platform', {
+      value: 'darwin'
+    });
+    Object.defineProperty(process, 'arch', {
+      value: 'arm64'
+    });
+
+    // 1. Mock version resolution (Brew)
+    mockGet.mockResolvedValueOnce({
+      message: {statusCode: 200},
+      readBody: vi.fn().mockResolvedValue(JSON.stringify({versions: {stable: '0.120.0'}}))
+    });
+
+    // 2. Mock tool download (tc.downloadTool)
+    vi.mocked(tc.downloadTool).mockResolvedValue('/fake/path/hugo.tar.gz');
+
+    // 3. Mock extraction
+    vi.mocked(tc.extractTar).mockResolvedValue('/fake/path/extracted');
+
+    // 4. Mock execution of hugo version
+    vi.mocked(exec.exec).mockImplementation((_cmd, _args, options) => {
+      if (options?.listeners?.stdout) {
+        options.listeners.stdout(Buffer.from('hugo v0.120.0'));
+      }
+      return Promise.resolve(0);
+    });
+
+    const result = await run();
+
+    // Verify the whole chain
+    expect(core.info).toHaveBeenCalledWith('Hugo version: 0.120.0');
+    expect(tc.downloadTool).toHaveBeenCalled();
+    expect(tc.extractTar).toHaveBeenCalledWith(
+      '/fake/path/hugo.tar.gz',
+      expect.stringContaining('_temp')
+    );
+    expect(io.mv).toHaveBeenCalledWith(
+      expect.stringMatching(/[\\/]hugo$/),
+      expect.stringMatching(/[\\/]bin$/)
+    );
+    expect(core.addPath).toHaveBeenCalledWith(expect.stringMatching(/[\\/]bin$/));
+    expect(result.exitcode).toBe(0);
+    expect(result.output).toContain('hugo v0.120.0');
   });
 
   test('full successful flow for latest version on Windows', async () => {
@@ -96,6 +146,7 @@ describe('Integration: run()', () => {
       expect.stringMatching(/[\\/]hugo\.exe$/),
       expect.stringMatching(/[\\/]bin$/)
     );
+    expect(core.addPath).toHaveBeenCalledWith(expect.stringMatching(/[\\/]bin$/));
     expect(result.exitcode).toBe(0);
     expect(result.output).toContain('hugo v0.120.0');
   });
@@ -138,6 +189,7 @@ describe('Integration: run()', () => {
       expect.stringMatching(/[\\/]hugo$/),
       expect.stringMatching(/[\\/]bin$/)
     );
+    expect(core.addPath).toHaveBeenCalledWith(expect.stringMatching(/[\\/]bin$/));
     expect(result.exitcode).toBe(0);
     expect(result.output).toContain('hugo v0.120.0');
   });
