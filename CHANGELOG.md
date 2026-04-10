@@ -1,5 +1,42 @@
 # Changelog
 
+All changes will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [1.0.1](https://github.com/denmette/actions-hugo/compare/v1.0.0...v1.0.1) (2026-04-10)
+
+### Bug Fixes
+
+* checkout with token ([62f58b1](https://github.com/denmette/actions-hugo/commit/62f58b1fc56fc03f2c8633c648f09999b7697489))
+* **release:** install conventionalcommits preset ([#88](https://github.com/denmette/actions-hugo/issues/88)) ([3bbcbbf](https://github.com/denmette/actions-hugo/commit/3bbcbbf7c28fdbc42d9d7b88831f0e1a77ea9bf6))
+* **renovate:** remove invalid node rule option ([e4372cc](https://github.com/denmette/actions-hugo/commit/e4372cce7330e5ce347190ca436b2516cc94bd6e))
+
+### Documentation
+
+* adding new backlog tasks ([c4de65c](https://github.com/denmette/actions-hugo/commit/c4de65c2dc00dc35b81e524253d9590753df8564))
+* adding new backlog tasks ([121a53d](https://github.com/denmette/actions-hugo/commit/121a53db36ae0b42853a5d7b1a0de10f05628b4f))
+* adding new backlog tasks ([8319e98](https://github.com/denmette/actions-hugo/commit/8319e98b80cb5a0236390fd1683c109e38c19cff))
+
+### Maintenance
+
+* **deps:** lock file maintenance ([#84](https://github.com/denmette/actions-hugo/issues/84)) ([9967344](https://github.com/denmette/actions-hugo/commit/9967344151f280de5dc66bcaed5de8599e89405c))
+* **deps:** update actions/github-script action to v9 ([#85](https://github.com/denmette/actions-hugo/issues/85)) ([b3ecfdc](https://github.com/denmette/actions-hugo/commit/b3ecfdcc3cc0cbac8ee4d33523050ac6671b0024))
+* **deps:** update dependency @types/node to v24 ([#82](https://github.com/denmette/actions-hugo/issues/82)) ([5329b87](https://github.com/denmette/actions-hugo/commit/5329b876751f0be04dea0e9317d8486326b3c26e))
+* **deps:** update dependency ubuntu to v24 ([#81](https://github.com/denmette/actions-hugo/issues/81)) ([0e6ac63](https://github.com/denmette/actions-hugo/commit/0e6ac633468e38782ada2c17b59871176bbbebfa))
+* **deps:** update node.js to >=24.14.1 ([#78](https://github.com/denmette/actions-hugo/issues/78)) ([9b5a4cc](https://github.com/denmette/actions-hugo/commit/9b5a4cccec0fa4f0b1759bbfa40b27ad302fb359))
+* **deps:** update npm to >=10.9.8 ([#79](https://github.com/denmette/actions-hugo/issues/79)) ([16a694f](https://github.com/denmette/actions-hugo/commit/16a694f49161744a24e3d6272f79d195dc372e52))
+* **deps:** update npm to v11 ([#83](https://github.com/denmette/actions-hugo/issues/83)) ([8e9777b](https://github.com/denmette/actions-hugo/commit/8e9777b18cc1de197175d77d8d860416956b0201))
+* **deps:** update zizmorcore/zizmor-action action to v0.5.2 ([#80](https://github.com/denmette/actions-hugo/issues/80)) ([30d536b](https://github.com/denmette/actions-hugo/commit/30d536b06dd7472e66a366aba454fede8beae7ab))
+
+### CI
+
+* **release:** prevent semantic-release loops ([63f8a17](https://github.com/denmette/actions-hugo/commit/63f8a17c382e8d99fb2013b1ba7b143419795e71))
+* **release:** use gh token for semantic-release ([f1453aa](https://github.com/denmette/actions-hugo/commit/f1453aac76d851b7a7be1008bd2bb30b479d1c64))
+* standardizing the tooling ([#87](https://github.com/denmette/actions-hugo/issues/87)) ([32ca4f6](https://github.com/denmette/actions-hugo/commit/32ca4f63a0a395e5199a357e7885acada8f2f721))
+* **test:** align matrix validation steps ([#86](https://github.com/denmette/actions-hugo/issues/86)) ([61f839d](https://github.com/denmette/actions-hugo/commit/61f839de7617373beb6d2e9eaaae582e6f48329e))
+
+# Changelog
+
 All notable changes to this project are recorded here. Historical entries still reflect the upstream project context they were generated from, while future entries are maintained by semantic-release for this fork's GitHub releases and changelog automation.
 
 # [3.0.0](https://github.com/peaceiris/actions-hugo/compare/v2.6.0...v3.0.0) (2024-04-02)
