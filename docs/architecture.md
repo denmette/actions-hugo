@@ -66,15 +66,9 @@ sequenceDiagram
 2. [`src/main.ts`](../src/main.ts) reads inputs, resolves the Hugo version, runs the installer, and then calls `hugo version` for confirmation.
 3. [`src/get-latest-version.ts`](../src/get-latest-version.ts) resolves `latest`.
    It prefers the Brew formula API and falls back to the GitHub Releases API when Brew lookup fails.
-4. [`src/installer.ts`](../src/installer.ts) detects OS and architecture, tries direct candidate asset URLs first, then falls back to release-asset metadata lookup when direct URLs return 404s.
-5. [`src/hugo-assets.ts`](../src/hugo-assets.ts) is the shared mapping layer for asset names and candidate download URLs.
-
-Supporting helpers:
-
-* [`src/get-os.ts`](../src/get-os.ts): runner platform mapping
-* [`src/get-arch.ts`](../src/get-arch.ts): runner architecture mapping
-* [`src/constants.ts`](../src/constants.ts): repository and command constants
-* [`src/get-url.ts`](../src/get-url.ts): candidate URL generation
+4. [`src/installer.ts`](../src/installer.ts) uses `hugo-assets.ts` to detect OS and architecture, tries direct candidate asset URLs first, then falls back to release-asset metadata lookup when direct URLs return 404s.
+5. [`src/hugo-assets.ts`](../src/hugo-assets.ts) defines supported platforms, architectures, and the mapping layer for asset names and candidate download URLs.
+6. [`src/constants.ts`](../src/constants.ts) defines repository and command constants.
 
 ## Runtime structure
 
@@ -132,14 +126,15 @@ CI verifies that the committed artifact stays in sync with source and dependency
 
 # Test strategy
 
-The test strategy separates orchestration from lower-level behavior:
+The test strategy separates orchestration from lower-level behavior, following a "Testing Trophy" approach where integration tests verify core flows while unit tests cover exhaustive edge cases:
 
-* [`__tests__/main.test.ts`](../__tests__/main.test.ts): orchestration
-* [`__tests__/installer.test.ts`](../__tests__/installer.test.ts): installer behavior
-* [`__tests__/get-latest-version.test.ts`](../__tests__/get-latest-version.test.ts): version resolution
-* [`__tests__/get-url.test.ts`](../__tests__/get-url.test.ts): URL generation
-* [`__tests__/get-os.test.ts`](../__tests__/get-os.test.ts)
-* [`__tests__/get-arch.test.ts`](../__tests__/get-arch.test.ts)
+* [`__tests__/unit/`](../__tests__/unit): Exhaustive unit tests with heavy mocking for individual modules.
+* [`__tests__/integration/action.test.ts`](../__tests__/integration/action.test.ts): Full-path integration testing of the action entrypoint with minimal mocking.
+* [`__tests__/unit/index.test.ts`](../__tests__/unit/index.test.ts): Entrypoint error handling unit tests.
+* [`__tests__/unit/main.test.ts`](../__tests__/unit/main.test.ts): Orchestration logic.
+* [`__tests__/unit/installer.test.ts`](../__tests__/unit/installer.test.ts): Installer behavior and platform-specific path resolution.
+* [`__tests__/unit/get-latest-version.test.ts`](../__tests__/unit/get-latest-version.test.ts): Version resolution logic.
+* [`__tests__/unit/hugo-assets.test.ts`](../__tests__/unit/hugo-assets.test.ts): Asset URL generation and platform/architecture mapping.
 
 Vitest is used with deterministic fixtures:
 

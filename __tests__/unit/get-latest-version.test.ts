@@ -3,10 +3,11 @@ import {
   getURL,
   getLatestVersion,
   getLatestVersionWithFallback,
-  getReleaseAssetURL
-} from '../src/get-latest-version.js';
-import {Tool} from '../src/constants.js';
-import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
+  getReleaseAssetURL,
+  APIProvider
+} from '../../src/get-latest-version';
+import {Tool} from '../../src/constants';
+import {HUGO_TEST_FIXTURES} from '../fixtures/hugo';
 
 const mockGet = vi.fn();
 
@@ -30,11 +31,11 @@ afterEach(() => {
 describe('getURL()', () => {
   test('return expected URL', () => {
     const urlBrewExpected = `https://formulae.brew.sh/api/formula/${Tool.Repo}.json`;
-    const urlBrew: string = getURL(Tool.Org, Tool.Repo, 'brew');
+    const urlBrew: string = getURL(Tool.Org, Tool.Repo, APIProvider.Brew);
     expect(urlBrew).toMatch(urlBrewExpected);
 
     const urlGithubExpected = `https://api.github.com/repos/${Tool.Org}/${Tool.Repo}/releases/latest`;
-    const urlGithub: string = getURL(Tool.Org, Tool.Repo, 'github');
+    const urlGithub: string = getURL(Tool.Org, Tool.Repo, APIProvider.GitHub);
     expect(urlGithub).toMatch(urlGithubExpected);
   });
 });
@@ -51,7 +52,7 @@ describe('getLatestVersion()', () => {
         .mockResolvedValue(JSON.stringify({versions: {stable: HUGO_TEST_FIXTURES.latestVersion}}))
     });
 
-    const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'brew');
+    const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, APIProvider.Brew);
     expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
   });
 
@@ -66,8 +67,20 @@ describe('getLatestVersion()', () => {
         .mockResolvedValue(JSON.stringify({tag_name: HUGO_TEST_FIXTURES.latestVersion}))
     });
 
-    const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, 'github');
+    const versionLatest: string = await getLatestVersion(Tool.Org, Tool.Repo, APIProvider.GitHub);
     expect(versionLatest).toMatch(HUGO_TEST_FIXTURES.latestVersion);
+  });
+
+  test('handle malformed JSON response', async () => {
+    mockGet.mockResolvedValue({
+      message: {
+        statusCode: 200,
+        statusMessage: 'OK'
+      },
+      readBody: vi.fn().mockResolvedValue('invalid json')
+    });
+
+    await expect(getLatestVersion(Tool.Org, Tool.Repo, APIProvider.Brew)).rejects.toThrow();
   });
 
   test('return exception 404', async () => {
@@ -79,8 +92,21 @@ describe('getLatestVersion()', () => {
       readBody: vi.fn().mockResolvedValue('')
     });
 
-    await expect(getLatestVersion(Tool.Org, Tool.Repo, 'brew')).rejects.toThrow(
+    await expect(getLatestVersion(Tool.Org, Tool.Repo, APIProvider.Brew)).rejects.toThrow(
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
+    );
+  });
+
+  test('throw error for unexpected status code without message', async () => {
+    mockGet.mockResolvedValue({
+      message: {
+        statusCode: 500
+      },
+      readBody: vi.fn().mockResolvedValue('')
+    });
+
+    await expect(getLatestVersion(Tool.Org, Tool.Repo, APIProvider.Brew)).rejects.toThrow(
+      `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 500`
     );
   });
 
@@ -132,7 +158,7 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'true', version)
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', true, version)
     ).resolves.toBe(downloadURL);
   });
 
@@ -158,7 +184,7 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'Windows', '64bit', 'false', version)
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'Windows', '64bit', false, version)
     ).resolves.toBe(downloadURL);
   });
 
@@ -174,7 +200,7 @@ describe('getReleaseAssetURL()', () => {
     });
 
     await expect(
-      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', 'false', version)
+      getReleaseAssetURL(Tool.Org, Tool.Repo, 'macOS', 'ARM64', false, version)
     ).rejects.toThrow('No compatible release asset found');
   });
 });

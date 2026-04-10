@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
-import * as main from './main.js';
+import * as main from './main';
 
-(async (): Promise<void> => {
+void (async (): Promise<void> => {
   try {
     await main.run();
   } catch (e) {

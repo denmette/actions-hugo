@@ -1,4 +1,33 @@
-function getExtension(os: string): string {
+export type HugoOS = 'Linux' | 'macOS' | 'Windows';
+export type HugoArch = '64bit' | 'ARM' | 'ARM64';
+
+export function getOS(platform: string): HugoOS {
+  switch (platform) {
+    case 'linux':
+      return 'Linux';
+    case 'darwin':
+      return 'macOS';
+    case 'win32':
+      return 'Windows';
+    default:
+      throw new Error(`Platform ${platform} is not supported by Hugo`);
+  }
+}
+
+export function getArch(arch: string): HugoArch {
+  switch (arch) {
+    case 'x64':
+      return '64bit';
+    case 'arm':
+      return 'ARM';
+    case 'arm64':
+      return 'ARM64';
+    default:
+      throw new Error(`Architecture ${arch} is not supported by Hugo`);
+  }
+}
+
+function getExtension(os: HugoOS): string {
   if (os === 'Windows') {
     return 'zip';
   }
@@ -6,18 +35,23 @@ function getExtension(os: string): string {
   return 'tar.gz';
 }
 
-function getLegacyAssetName(os: string, arch: string, extended: string, version: string): string {
-  const extendedPrefix = extended === 'true' ? 'extended_' : '';
+function getLegacyAssetName(
+  os: HugoOS,
+  arch: HugoArch,
+  extended: boolean,
+  version: string
+): string {
+  const extendedPrefix = extended ? 'extended_' : '';
   return `hugo_${extendedPrefix}${version}_${os}-${arch}.${getExtension(os)}`;
 }
 
 function getCurrentAssetNames(
-  os: string,
-  arch: string,
-  extended: string,
+  os: HugoOS,
+  arch: HugoArch,
+  extended: boolean,
   version: string
 ): string[] {
-  const extendedPrefix = extended === 'true' ? 'extended_' : '';
+  const extendedPrefix = extended ? 'extended_' : '';
   const prefix = `hugo_${extendedPrefix}${version}_`;
 
   switch (os) {
@@ -53,9 +87,9 @@ function getCurrentAssetNames(
 }
 
 export function getCandidateAssetNames(
-  os: string,
-  arch: string,
-  extended: string,
+  os: HugoOS,
+  arch: HugoArch,
+  extended: boolean,
   version: string
 ): string[] {
   return [
@@ -65,13 +99,17 @@ export function getCandidateAssetNames(
 }
 
 export function getCandidateURLs(
-  os: string,
-  arch: string,
-  extended: string,
+  os: HugoOS,
+  arch: HugoArch,
+  extended: boolean,
   version: string
 ): string[] {
   const baseURL = `https://github.com/gohugoio/hugo/releases/download/v${version}`;
   return getCandidateAssetNames(os, arch, extended, version).map(
     assetName => `${baseURL}/${assetName}`
   );
+}
+
+export function getURL(os: HugoOS, arch: HugoArch, extended: boolean, version: string): string {
+  return getCandidateURLs(os, arch, extended, version)[0];
 }
