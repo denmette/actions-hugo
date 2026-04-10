@@ -24,14 +24,12 @@ Thanks to this change, we can complete this action in less than a few seconds.
 (A docker base action was taking about 1 min or more execution time to build and pull a docker image.)
 
 | OS (runs-on) | ubuntu-latest | macos-latest | windows-latest |
-|---|:---:|:---:|:---:|
-| Support | ✅️ | ✅️ | ✅️ |
+| ------------ | :-----------: | :----------: | :------------: |
+| Support      |      ✅️       |      ✅️      |       ✅️       |
 
 | Hugo type | Hugo Extended | Hugo Modules | Latest Hugo |
-|---|:---:|:---:|:---:|
-| Support | ✅️ | ✅️ | ✅️ |
-
-
+| --------- | :-----------: | :----------: | :---------: |
+| Support   |      ✅️       |      ✅️      |     ✅️      |
 
 ## Table of Contents
 
@@ -57,8 +55,6 @@ Thanks to this change, we can complete this action in less than a few seconds.
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-
-
 ## Getting started
 
 ### ⭐️ Create your workflow
@@ -76,7 +72,7 @@ name: GitHub Pages
 on:
   push:
     branches:
-      - main  # Set a branch to deploy
+      - main # Set a branch to deploy
   pull_request:
 
 jobs:
@@ -87,8 +83,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
         uses: denmette/actions-hugo@v3
@@ -110,8 +106,6 @@ jobs:
 <div align="right">
 <a href="#table-of-contents">Back to TOC ☝️</a>
 </div>
-
-
 
 ## Options
 
@@ -144,8 +138,6 @@ This action resolves the latest Hugo version via [hugo | Homebrew Formulae](http
 <a href="#table-of-contents">Back to TOC ☝️</a>
 </div>
 
-
-
 ## Tips
 
 ### ⭐️ Caching Hugo Modules
@@ -162,6 +154,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       HUGO_CACHEDIR: /tmp/hugo_cache # <- Define the env variable here, so that Hugo's cache dir is now predictible in your workflow and doesn't depend on the Hugo's version you're using.
+
 
 # * ...
 ```
@@ -197,17 +190,17 @@ HUGO_VERSION=0.119.0
 Next, add a step to read a Hugo version from the `.env` file.
 
 ```yaml
-    - name: Read .env
-      id: hugo-version
-      run: |
-        . ./.env
-        echo "HUGO_VERSION=${HUGO_VERSION}" >> "${GITHUB_OUTPUT}"
+- name: Read .env
+  id: hugo-version
+  run: |
+    . ./.env
+    echo "HUGO_VERSION=${HUGO_VERSION}" >> "${GITHUB_OUTPUT}"
 
-    - name: Setup Hugo
-      uses: denmette/actions-hugo@v3
-      with:
-        hugo-version: '${{ steps.hugo-version.outputs.HUGO_VERSION }}'
-        extended: true
+- name: Setup Hugo
+  uses: denmette/actions-hugo@v3
+  with:
+    hugo-version: '${{ steps.hugo-version.outputs.HUGO_VERSION }}'
+    extended: true
 ```
 
 Here is a `docker-compose.yml` example.
@@ -218,7 +211,7 @@ version: '3'
 services:
   hugo:
     container_name: hugo
-    image: "peaceiris/hugo:v${HUGO_VERSION}"
+    image: 'peaceiris/hugo:v${HUGO_VERSION}'
     # image: peaceiris/hugo:v${HUGO_VERSION}-mod   # Hugo Modules
     # image: peaceiris/hugo:v${HUGO_VERSION}-full  # Hugo Modules and Node.js
     ports:
@@ -256,7 +249,7 @@ name: GitHub Pages
 on:
   push:
     branches:
-      - main  # Set a branch to deploy
+      - main # Set a branch to deploy
   pull_request:
 
 jobs:
@@ -267,7 +260,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          fetch-depth: 0         # Fetch all history for .GitInfo and .Lastmod
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
         uses: denmette/actions-hugo@v3
@@ -309,7 +302,7 @@ name: GitHub Pages
 on:
   push:
     branches:
-      - main  # Set a branch to deploy
+      - main # Set a branch to deploy
   pull_request:
 
 jobs:
@@ -320,8 +313,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
-          fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
+          submodules: true # Fetch Hugo themes (true OR recursive)
+          fetch-depth: 0 # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
         uses: denmette/actions-hugo@v3
@@ -387,21 +380,15 @@ jobs:
 <a href="#table-of-contents">Back to TOC ☝️</a>
 </div>
 
-
-
 ## CHANGELOG
 
 - [CHANGELOG.md](CHANGELOG.md)
-
-
 
 ## License
 
 - [MIT License - denmette/actions-hugo]
 
 [MIT License - denmette/actions-hugo]: https://github.com/denmette/actions-hugo/blob/main/LICENSE
-
-
 
 ## About Maintainer
 
@@ -416,8 +403,6 @@ This repository standardizes on Node `24.14.1` and npm `11.12.1`.
 Use `nvm use`, `corepack enable`, `corepack install`, and then `npm ci` so local development matches the repository baseline and CI behavior.
 
 Full setup and usage notes live in [docs/local-setup.md](docs/local-setup.md).
-
-
 
 ## Maintainer Notes
 
@@ -436,9 +421,10 @@ env RUNNER_TEMP=/tmp npm test
 The repository test suite now runs on Vitest so the test runner stays aligned with the ESM and TypeScript setup without extra CommonJS bootstrap files.
 
 Workflow structure:
+
 - `test.yml` is the primary push and pull request validation workflow. It owns formatting, linting, type-checking, bundle verification, and the full Vitest suite.
 - `test-action.yml` verifies the published local action entrypoint. The scheduled run is a smaller daily smoke matrix, while `workflow_dispatch` keeps the broader compatibility matrix for manual checks.
-- `release.yml` and `update-major-tag.yml` own release publication and moving major tags after a published release.
+- `release.yml` runs only after the `Test` workflow succeeds on `main`, and `update-major-tag.yml` moves major tags after a published release.
 - `dependency-review.yml`, `codeql-analysis.yml`, and `conventional-pr.yml` are repository policy and security checks.
 - `dev-image.yml`, `label-commenter.yml`, and `purge-readme-image-cache.yml` are maintenance workflows and intentionally stay outside the main validation path.
 
@@ -455,8 +441,6 @@ Run `npm test` on a Docker container.
 make build
 make all
 ```
-
-
 
 <div align="right">
 <a href="#table-of-contents">Back to TOC ☝️</a>
