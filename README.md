@@ -23,7 +23,7 @@ We no longer build or pull a Hugo docker image.
 Thanks to this change, we can complete this action in less than a few seconds.
 (A docker base action was taking about 1 min or more execution time to build and pull a docker image.)
 
-| OS (runs-on) | ubuntu-latest, ubuntu-20.04, ubuntu-22.04 | macos-latest | windows-2019 |
+| OS (runs-on) | ubuntu-latest | macos-latest | windows-latest |
 |---|:---:|:---:|:---:|
 | Support | ✅️ | ✅️ | ✅️ |
 
@@ -81,11 +81,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
@@ -138,7 +138,7 @@ Set `hugo-version: 'latest'` to use the latest version of Hugo.
     hugo-version: 'latest'
 ```
 
-This action fetches the latest version of Hugo by [hugo | Homebrew Formulae](https://formulae.brew.sh/formula/hugo)
+This action resolves the latest Hugo version via [hugo | Homebrew Formulae](https://formulae.brew.sh/formula/hugo) and falls back to GitHub release metadata if the Brew lookup fails.
 
 <div align="right">
 <a href="#table-of-contents">Back to TOC ☝️</a>
@@ -159,7 +159,7 @@ First, to maximize compatibility with all Hugo versions, let's define the variab
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     env:
       HUGO_CACHEDIR: /tmp/hugo_cache # <- Define the env variable here, so that Hugo's cache dir is now predictible in your workflow and doesn't depend on the Hugo's version you're using.
 
@@ -256,16 +256,16 @@ name: GitHub Pages
 on:
   push:
     branches:
-      - master  # Set a branch to deploy
+      - main  # Set a branch to deploy
   pull_request:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0         # Fetch all history for .GitInfo and .Lastmod
 
@@ -275,9 +275,9 @@ jobs:
           hugo-version: '0.119.0'
           extended: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'npm'
           # The action defaults to search for the dependency file (package-lock.json,
           # npm-shrinkwrap.json or yarn.lock) in the repository root, and uses its
@@ -290,7 +290,7 @@ jobs:
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -314,11 +314,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
@@ -366,11 +366,11 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
