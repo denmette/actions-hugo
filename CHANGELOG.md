@@ -3,6 +3,26 @@
 All changes will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.3](https://github.com/denmette/actions-hugo/compare/v1.0.2...v1.0.3) (2026-04-10)
+
+### Bug Fixes
+
+* **runtime:** fall back to github for latest hugo ([fa7e110](https://github.com/denmette/actions-hugo/commit/fa7e1102ddd25877d1a84c528169c1cfdcab3936))
+
+### Documentation
+
+* **backlog:** add release workflow gating task ([3a9dc93](https://github.com/denmette/actions-hugo/commit/3a9dc9310c9eb273fd2da7b980145822e799865d))
+* **readme:** refresh workflow examples ([63b3682](https://github.com/denmette/actions-hugo/commit/63b3682978ddbbd0fce1af18a3bc2175a917e098))
+
+### CI
+
+* **dev-image:** expand container validation ([f3e3d7e](https://github.com/denmette/actions-hugo/commit/f3e3d7e70e4efbfa7668b8a348308485909f4575))
+* **release:** gate release on test workflow ([ce204d9](https://github.com/denmette/actions-hugo/commit/ce204d9bc9aaac6dfa65ae242e4effd67f4c02bc))
+
+### Build
+
+* **bundle:** refresh committed artifact ([4bc4307](https://github.com/denmette/actions-hugo/commit/4bc4307bfa4184315591e7de9fa99dfe05fa23fe))
+
 ## [1.0.2](https://github.com/denmette/actions-hugo/compare/v1.0.1...v1.0.2) (2026-04-10)
 
 ### Maintenance
