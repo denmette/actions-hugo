@@ -4,6 +4,7 @@
   "description": "GitHub Actions for Hugo",
   "type": "module",
   "main": "lib/index.js",
+  "packageManager": "npm@11.12.1",
   "engines": {
     "node": ">=24.14.1",
     "npm": ">=11.12.1"
