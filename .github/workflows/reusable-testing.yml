@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        uses: step-security/harden-runner@v2.17.0
         with:
           egress-policy: audit
 
@@ -47,7 +47,7 @@ jobs:
           - 'windows-latest'
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        uses: step-security/harden-runner@v2.17.0
         with:
           egress-policy: audit
 
@@ -94,7 +94,7 @@ jobs:
         extended: [true, false]
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        uses: step-security/harden-runner@v2.17.0
         with:
           egress-policy: audit
 
