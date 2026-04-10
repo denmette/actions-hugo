@@ -57,7 +57,54 @@ describe('Integration: run()', () => {
     }
   });
 
+  test('full successful flow for latest version on Windows', async () => {
+    // Force Windows platform
+    Object.defineProperty(process, 'platform', {
+      value: 'win32'
+    });
+
+    // 1. Mock version resolution (Brew)
+    mockGet.mockResolvedValueOnce({
+      message: {statusCode: 200},
+      readBody: vi.fn().mockResolvedValue(JSON.stringify({versions: {stable: '0.120.0'}}))
+    });
+
+    // 2. Mock tool download (tc.downloadTool)
+    vi.mocked(tc.downloadTool).mockResolvedValue('C:\\fake\\path\\hugo.zip');
+
+    // 3. Mock extraction
+    vi.mocked(tc.extractZip).mockResolvedValue('C:\\fake\\path\\extracted');
+
+    // 4. Mock execution of hugo version
+    vi.mocked(exec.exec).mockImplementation((_cmd, _args, options) => {
+      if (options?.listeners?.stdout) {
+        options.listeners.stdout(Buffer.from('hugo v0.120.0'));
+      }
+      return Promise.resolve(0);
+    });
+
+    const result = await run();
+
+    // Verify the whole chain
+    expect(core.info).toHaveBeenCalledWith('Hugo version: 0.120.0');
+    expect(tc.downloadTool).toHaveBeenCalled();
+    expect(tc.extractZip).toHaveBeenCalledWith(
+      'C:\\fake\\path\\hugo.zip',
+      expect.stringContaining('_temp')
+    );
+    expect(io.mv).toHaveBeenCalledWith(
+      expect.stringMatching(/[\\/]hugo\.exe$/),
+      expect.stringMatching(/[\\/]bin$/)
+    );
+    expect(result.exitcode).toBe(0);
+    expect(result.output).toContain('hugo v0.120.0');
+  });
+
   test('full successful flow for latest version', async () => {
+    // Force Linux platform
+    Object.defineProperty(process, 'platform', {
+      value: 'linux'
+    });
     // 1. Mock version resolution (Brew)
     mockGet.mockResolvedValueOnce({
       message: {statusCode: 200},
@@ -96,6 +143,14 @@ describe('Integration: run()', () => {
   });
 
   test('full flow with specific version and fallback to GitHub API', async () => {
+    // Force Linux platform
+    Object.defineProperty(process, 'platform', {
+      value: 'linux'
+    });
+    Object.defineProperty(process, 'arch', {
+      value: 'arm64'
+    });
+
     vi.mocked(core.getInput).mockImplementation((name: string) => {
       if (name === 'hugo-version') return '0.119.0';
       return '';
@@ -109,7 +164,6 @@ describe('Integration: run()', () => {
     vi.mocked(tc.downloadTool)
       .mockRejectedValueOnce(new Error('Unexpected HTTP response: 404')) // first candidate
       .mockRejectedValueOnce(new Error('Unexpected HTTP response: 404')) // second candidate
-      .mockRejectedValueOnce(new Error('Unexpected HTTP response: 404')) // third candidate
       .mockResolvedValueOnce('/fake/path/hugo_fallback.tar.gz'); // fallback
 
     // Mock GitHub Release API for fallback URL
@@ -119,7 +173,7 @@ describe('Integration: run()', () => {
         JSON.stringify({
           assets: [
             {
-              name: 'hugo_extended_0.119.0_macOS-ARM64.tar.gz',
+              name: 'hugo_extended_0.119.0_Linux-ARM64.tar.gz',
               browser_download_url: 'https://github.com/fallback-url'
             }
           ]
@@ -132,8 +186,8 @@ describe('Integration: run()', () => {
 
     await run();
 
-    expect(tc.downloadTool).toHaveBeenCalledTimes(4); // 3 candidates + 1 fallback
+    expect(tc.downloadTool).toHaveBeenCalledTimes(3); // 2 candidates + 1 fallback
     expect(mockGet).toHaveBeenCalled(); // Should have called GitHub API for fallback
-    expect(vi.mocked(tc.downloadTool).mock.calls[3][0]).toBe('https://github.com/fallback-url');
+    expect(vi.mocked(tc.downloadTool).mock.calls[2][0]).toBe('https://github.com/fallback-url');
   });
 });
