@@ -3,6 +3,12 @@
 All changes will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.2](https://github.com/denmette/actions-hugo/compare/v1.0.1...v1.0.2) (2026-04-10)
+
+### Maintenance
+
+* **deps:** update dependency prettier to ^3.8.2 ([#89](https://github.com/denmette/actions-hugo/issues/89)) ([f17ce02](https://github.com/denmette/actions-hugo/commit/f17ce025b36628829e3da16070e88480daa36578))
+
 ## [1.0.1](https://github.com/denmette/actions-hugo/compare/v1.0.0...v1.0.1) (2026-04-10)
 
 ### Bug Fixes
