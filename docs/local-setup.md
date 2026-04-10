@@ -2,8 +2,8 @@
 
 This repository standardizes on:
 
-- Node `24.14.1` from [`.nvmrc`](/Users/macs/Coding/Personal/github-actions/actions-hugo/.nvmrc)
-- npm `11.12.1` from [`package.json`](/Users/macs/Coding/Personal/github-actions/actions-hugo/package.json)
+- Node `24.14.1` from [`.nvmrc`](../.nvmrc)
+- npm `11.12.1` from [`package.json`](../package.json)
 - Corepack as the local tool used to activate the pinned package-manager version
 
 The repository does not use Yarn or pnpm. The standard package manager is npm, and Corepack is used to activate the pinned npm version consistently.
@@ -45,7 +45,7 @@ npm run all
 
 ## Bundle Updates
 
-This repository commits the generated action bundle in [`lib/`](/Users/macs/Coding/Personal/github-actions/actions-hugo/lib).
+This repository commits the generated action bundle in [`lib/`](../lib).
 
 When you change:
 

@@ -415,7 +415,7 @@ jobs:
 This repository standardizes on Node `24.14.1` and npm `11.12.1`.
 Use `nvm use`, `corepack enable`, `corepack install`, and then `npm ci` so local development matches the repository baseline and CI behavior.
 
-Full setup and usage notes live in [docs/local-setup.md](/Users/macs/Coding/Personal/github-actions/actions-hugo/docs/local-setup.md).
+Full setup and usage notes live in [docs/local-setup.md](docs/local-setup.md).
 
 
 
