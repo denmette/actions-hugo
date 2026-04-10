@@ -3,6 +3,22 @@
 All changes will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.4](https://github.com/denmette/actions-hugo/compare/v1.0.3...v1.0.4) (2026-04-10)
+
+### Documentation
+
+* **architecture:** add repository overview ([3563060](https://github.com/denmette/actions-hugo/commit/3563060b17e1c696315aadd906510cd354b645bc))
+* using mermaid instead of plantuml ([eb3792e](https://github.com/denmette/actions-hugo/commit/eb3792e2d10275b8670217aa6149122180a12d24))
+
+### Refactoring
+
+* remove unused modules and corresponding tests ([0223d83](https://github.com/denmette/actions-hugo/commit/0223d83222fc902d871812894d179b23be056dff))
+
+### Tests
+
+* add macOS-specific integration flow and restore platform/arch defaults ([9d98483](https://github.com/denmette/actions-hugo/commit/9d9848395075ea235773f3aae23f1e914163fca9))
+* add Windows-specific integration flow and adjust fallback logic ([310b768](https://github.com/denmette/actions-hugo/commit/310b768f8c1541b036838db2145bda7b41330d16))
+
 ## [1.0.3](https://github.com/denmette/actions-hugo/compare/v1.0.2...v1.0.3) (2026-04-10)
 
 ### Bug Fixes
