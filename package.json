@@ -15,8 +15,8 @@
     "test": "vitest run --coverage",
     "build": "ncc build ./src/index.ts -o lib",
     "tsc": "tsc --noEmit",
-    "format": "prettier --write '**/*.ts'",
-    "format:check": "prettier --check '**/*.ts'",
+    "format": "prettier --write \"src/**/*.ts\" \"__tests__/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"__tests__/**/*.ts\"",
     "release": "semantic-release",
     "release:dry-run": "semantic-release --dry-run",
     "postinstall": "husky"
