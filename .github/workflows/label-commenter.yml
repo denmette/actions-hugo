@@ -18,8 +18,13 @@ jobs:
   comment:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        with:
+          egress-policy: audit
+
       - name: Label Commenter
-        uses: actions/github-script@v9
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           script: |
             const issue_number = context.payload.issue.number

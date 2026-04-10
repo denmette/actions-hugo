@@ -7,8 +7,9 @@
 [![release](https://img.shields.io/github/release/denmette/actions-hugo.svg)](https://github.com/denmette/actions-hugo/releases/latest)
 [![GitHub release date](https://img.shields.io/github/release-date/denmette/actions-hugo.svg)](https://github.com/denmette/actions-hugo/releases)
 [![Release Feed](https://img.shields.io/badge/release-feed-yellow)](https://github.com/denmette/actions-hugo/releases.atom)
-![Test](https://github.com/denmette/actions-hugo/actions/workflows/test.yml/badge.svg?branch=main)
-![Code Scanning](https://github.com/denmette/actions-hugo/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)
+![CI/CD Pipeline](https://github.com/denmette/actions-hugo/actions/workflows/test.yml/badge.svg?branch=main)
+![SAST](https://github.com/denmette/actions-hugo/actions/workflows/test.yml/badge.svg?job=security+/+sast&branch=main)
+![CodeQL](https://github.com/denmette/actions-hugo/actions/workflows/test.yml/badge.svg?job=security+/+codeql&branch=main)
 
 This **Hugo Setup Action** can install [Hugo] to a virtual machine of **GitHub Actions**.
 **Hugo extended** version, **Hugo Modules**, Linux (Ubuntu), macOS, and Windows are supported.

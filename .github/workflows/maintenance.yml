@@ -1,0 +1,26 @@
+name: Maintenance
+
+on:
+  schedule:
+    - cron: '0 22 * * 0' # Weekly on Sundays at 22:00
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  purge-cache:
+    name: Purge image cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        with:
+          egress-policy: audit
+
+      - name: Purge image cache from Camo
+        run: |
+          curl -sL https://github.com/${GITHUB_REPOSITORY} |
+          grep -oE '<img src="https?://camo.githubusercontent.com/[^"]+' |
+          sed -e 's/<img src="//' |
+          xargs -I % curl -sX PURGE %

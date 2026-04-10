@@ -16,8 +16,13 @@ jobs:
   validate-title:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        with:
+          egress-policy: audit
+
       - name: Validate pull request title
-        uses: amannn/action-semantic-pull-request@v6
+        uses: amannn/action-semantic-pull-request@0723387faaf9b38adef541103e527fc6e609c1fa # v5.5.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

@@ -1,0 +1,68 @@
+name: CI Validation
+
+on:
+  workflow_call:
+
+jobs:
+  check-dist:
+    name: Check dist
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c483a2134b # v4.2.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: corepack enable
+      - run: corepack install
+      - run: corepack npm ci
+
+      - name: Build bundled action
+        run: corepack npm run build
+
+      - name: Verify no changes in lib/
+        run: |
+          if [ "$(git diff --name-only lib/ | wc -l)" -gt 0 ]; then
+            echo "::error::The 'lib/' directory is out of date. Please run 'npm run build' and commit the changes."
+            git diff lib/
+            exit 1
+          fi
+
+  check-docs:
+    name: Check docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@4d991eb9b905e20b33c5284eb99778e874838644 # v2.11.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c483a2134b # v4.2.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: corepack enable
+      - run: corepack install
+      - run: corepack npm ci
+
+      - name: Update README TOC
+        run: npx lint-staged
+
+      - name: Verify no changes in README.md
+        run: |
+          if [ "$(git diff --name-only README.md | wc -l)" -gt 0 ]; then
+            echo "::error::The 'README.md' TOC is out of date. Please run 'npx doctoc README.md' and commit the changes."
+            git diff README.md
+            exit 1
+          fi
+

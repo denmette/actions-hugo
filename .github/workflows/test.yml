@@ -1,4 +1,4 @@
-name: 'Test'
+name: 'CI/CD Pipeline'
 
 on:
   push:
@@ -9,81 +9,34 @@ on:
   pull_request:
     paths-ignore:
       - '**.md'
+  schedule:
+    - cron: '15 13 * * *' # daily at 13:15
+  workflow_dispatch:
 
 permissions:
   contents: read
+  security-events: write
+  pull-requests: write
+  actions: read
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - 'ubuntu-22.04'
-          - 'ubuntu-latest'
-          - 'macos-latest'
-          - 'windows-latest'
-    steps:
-      - uses: actions/checkout@v6
+  setup:
+    uses: ./.github/workflows/reusable-setup.yml
 
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
+  testing:
+    needs: setup
+    uses: ./.github/workflows/reusable-testing.yml
+    with:
+      lib-artifact-name: ${{ needs.setup.outputs.lib-artifact-name }}
 
-      - run: corepack enable
+  security:
+    needs: setup
+    uses: ./.github/workflows/reusable-security.yml
 
-      - run: corepack install
-
-      - run: corepack npm ci
-
-      - name: Run prettier
-        run: corepack npm run format:check
-
-      - name: Run eslint
-        run: corepack npm run lint
-
-      - name: Run TypeScript compiler
-        run: corepack npm run tsc
-
-      - name: Build bundled action
-        run: corepack npm run build
-
-      - run: corepack npm test
-
-      - name: Upload test coverage as artifact
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v7
-        with:
-          name: coverage-${{ matrix.os }}
-          path: coverage
-
-      - if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@v6
-
-  verify-bundle:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
-
-      - run: corepack enable
-
-      - run: corepack install
-
-      - run: corepack npm ci
-
-      - name: Build bundled action
-        run: corepack npm run build
-
-      - name: Verify committed bundle is up to date
-        run: git diff --exit-code -- lib
+  validation:
+    needs: setup
+    uses: ./.github/workflows/reusable-validation.yml
