@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: make build
-      - run: make cirun cmd="npm ci"
+      - run: make cirun cmd="corepack npm ci"
       # - run: make ciall
-      - run: make cirun cmd="npm run format:check"
-      - run: make cirun cmd="npm run lint"
+      - run: make cirun cmd="corepack npm run format:check"
+      - run: make cirun cmd="corepack npm run lint"
