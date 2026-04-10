@@ -6,7 +6,7 @@ const mockGetInput = vi.fn();
 const mockInfo = vi.fn();
 const mockDebug = vi.fn();
 const mockExec = vi.fn();
-const mockGetLatestVersion = vi.fn();
+const mockGetLatestVersionWithFallback = vi.fn();
 const mockInstaller = vi.fn();
 
 vi.mock('@actions/core', () => ({
@@ -24,7 +24,7 @@ vi.mock('../src/get-latest-version.js', async importOriginal => {
 
   return {
     ...actual,
-    getLatestVersion: mockGetLatestVersion
+    getLatestVersionWithFallback: mockGetLatestVersionWithFallback
   };
 });
 
@@ -50,7 +50,7 @@ describe('run()', () => {
 
     const result = await run();
 
-    expect(mockGetLatestVersion).not.toHaveBeenCalled();
+    expect(mockGetLatestVersionWithFallback).not.toHaveBeenCalled();
     expect(mockInstaller).toHaveBeenCalledWith(HUGO_TEST_FIXTURES.pinnedVersion);
     expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.pinnedVersion}`);
   });
@@ -58,7 +58,7 @@ describe('run()', () => {
   test('resolves and installs the latest version when requested', async () => {
     const {run} = await import('../src/main.js');
     mockGetInput.mockImplementation((name: string) => (name === 'hugo-version' ? 'latest' : ''));
-    mockGetLatestVersion.mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion);
+    mockGetLatestVersionWithFallback.mockResolvedValue(HUGO_TEST_FIXTURES.latestVersion);
     mockInstaller.mockResolvedValue(undefined);
     mockExec.mockImplementation(async (_cmd, _args, options) => {
       options.listeners.stdout(Buffer.from(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`));
@@ -67,7 +67,7 @@ describe('run()', () => {
 
     const result = await run();
 
-    expect(mockGetLatestVersion).toHaveBeenCalledWith(Tool.Org, Tool.Repo, 'brew');
+    expect(mockGetLatestVersionWithFallback).toHaveBeenCalledWith(Tool.Org, Tool.Repo);
     expect(mockInstaller).toHaveBeenCalledWith(HUGO_TEST_FIXTURES.latestVersion);
     expect(mockInfo).toHaveBeenCalledWith(`Hugo version: ${HUGO_TEST_FIXTURES.latestVersion}`);
     expect(result.output).toMatch(`hugo v${HUGO_TEST_FIXTURES.latestVersion}`);
@@ -79,7 +79,7 @@ describe('run()', () => {
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
     );
     mockGetInput.mockImplementation((name: string) => (name === 'hugo-version' ? 'latest' : ''));
-    mockGetLatestVersion.mockRejectedValue(error);
+    mockGetLatestVersionWithFallback.mockRejectedValue(error);
 
     await expect(run()).rejects.toThrow(error.message);
     expect(mockInstaller).not.toHaveBeenCalled();

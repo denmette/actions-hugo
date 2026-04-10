@@ -1,5 +1,10 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
-import {getURL, getLatestVersion, getReleaseAssetURL} from '../src/get-latest-version.js';
+import {
+  getURL,
+  getLatestVersion,
+  getLatestVersionWithFallback,
+  getReleaseAssetURL
+} from '../src/get-latest-version.js';
 import {Tool} from '../src/constants.js';
 import {HUGO_TEST_FIXTURES} from './fixtures/hugo.js';
 
@@ -76,6 +81,30 @@ describe('getLatestVersion()', () => {
 
     await expect(getLatestVersion(Tool.Org, Tool.Repo, 'brew')).rejects.toThrow(
       `Failed to fetch https://formulae.brew.sh/api/formula/${Tool.Repo}.json: 404`
+    );
+  });
+
+  test('fall back to GitHub when brew lookup fails', async () => {
+    mockGet
+      .mockResolvedValueOnce({
+        message: {
+          statusCode: 503,
+          statusMessage: 'Service Unavailable'
+        },
+        readBody: vi.fn().mockResolvedValue('')
+      })
+      .mockResolvedValueOnce({
+        message: {
+          statusCode: 200,
+          statusMessage: 'OK'
+        },
+        readBody: vi
+          .fn()
+          .mockResolvedValue(JSON.stringify({tag_name: HUGO_TEST_FIXTURES.latestVersion}))
+      });
+
+    await expect(getLatestVersionWithFallback(Tool.Org, Tool.Repo)).resolves.toBe(
+      HUGO_TEST_FIXTURES.latestVersion
     );
   });
 });

@@ -1,6 +1,6 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
-import {getLatestVersion} from './get-latest-version.js';
+import {getLatestVersionWithFallback} from './get-latest-version.js';
 import {installer} from './installer.js';
 import {Tool} from './constants.js';
 
@@ -34,7 +34,7 @@ export async function run(): Promise<ActionResult> {
   const toolVersion: string = core.getInput('hugo-version');
   const installVersion =
     toolVersion === '' || toolVersion === 'latest'
-      ? await getLatestVersion(Tool.Org, Tool.Repo, 'brew')
+      ? await getLatestVersionWithFallback(Tool.Org, Tool.Repo)
       : toolVersion;
 
   core.info(`${Tool.Name} version: ${installVersion}`);

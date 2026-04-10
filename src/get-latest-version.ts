@@ -57,6 +57,14 @@ export async function getLatestVersion(org: string, repo: string, api: string): 
   return latestVersion;
 }
 
+export async function getLatestVersionWithFallback(org: string, repo: string): Promise<string> {
+  try {
+    return await getLatestVersion(org, repo, 'brew');
+  } catch {
+    return await getLatestVersion(org, repo, 'github');
+  }
+}
+
 function normalizeTag(version: string): string {
   return version.startsWith('v') ? version : `v${version}`;
 }
