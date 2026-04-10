@@ -16,10 +16,10 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Run zizmor
-        uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
+        uses: zizmorcore/zizmor-action@v0.5.2
         with:
           inputs: |
             .github/workflows
@@ -40,18 +40,18 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@9e8d4766113f8b6540d99818815f91e1d039910a # v3.28.10
+        uses: github/codeql-action/init@v4
         with:
           languages: javascript
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@9e8d4766113f8b6540d99818815f91e1d039910a # v3.28.10
+        uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@9e8d4766113f8b6540d99818815f91e1d039910a # v3.28.10
+        uses: github/codeql-action/analyze@v4
 
   dependency-review:
     name: Dependency Review
@@ -66,7 +66,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: actions/dependency-review-action@3b1597514bc493504996929944be6c125740441d # v4.5.0
+      - uses: actions/checkout@v6
+      - uses: actions/dependency-review-action@v4
         with:
           comment-summary-in-pr: always

@@ -17,9 +17,9 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c483a2134b # v4.2.0
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -51,9 +51,9 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c483a2134b # v4.2.0
+      - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -63,7 +63,7 @@ jobs:
       - run: corepack npm ci
 
       - name: Download built lib artifact
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.lib-artifact-name }}
           path: lib
@@ -73,13 +73,13 @@ jobs:
 
       - name: Upload test coverage as artifact
         if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@4cea3ca74a44f3319808383c39686809633ee353 # v4.6.1
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}
           path: coverage
 
       - if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
+        uses: codecov/codecov-action@v6
 
   smoke-test:
     name: Smoke Test (${{ matrix.os }}, ext=${{ matrix.extended }})
@@ -98,16 +98,16 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@v6
 
       - name: Download built lib artifact
-        uses: actions/download-artifact@cc203385981b70ca67e1cc392babf9cc229d5806 # v4.1.9
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.lib-artifact-name }}
           path: lib
 
       - name: Cache Hugo
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
+        uses: actions/cache@v5
         with:
           path: |
             ${{ runner.temp }}/hugo_cache
