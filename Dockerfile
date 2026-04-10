@@ -4,7 +4,7 @@ FROM node:${NODE_VERSION}-bookworm-slim
 
 SHELL ["/bin/bash", "-l", "-c"]
 
-RUN corepack enable && corepack install
+RUN corepack enable && corepack install --global npm@11.12.1
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
