@@ -36,23 +36,25 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - run: npm install --global npm@11.12.1
+      - run: corepack enable
 
-      - run: npm ci
+      - run: corepack install
+
+      - run: corepack npm ci
 
       - name: Run prettier
-        run: npm run format:check
+        run: corepack npm run format:check
 
       - name: Run eslint
-        run: npm run lint
+        run: corepack npm run lint
 
       - name: Run TypeScript compiler
-        run: npm run tsc
+        run: corepack npm run tsc
 
       - name: Build bundled action
-        run: npm run build
+        run: corepack npm run build
 
-      - run: npm test
+      - run: corepack npm test
 
       - name: Upload test coverage as artifact
         if: matrix.os == 'ubuntu-latest'
@@ -74,12 +76,14 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - run: npm install --global npm@11.12.1
+      - run: corepack enable
 
-      - run: npm ci
+      - run: corepack install
+
+      - run: corepack npm ci
 
       - name: Build bundled action
-        run: npm run build
+        run: corepack npm run build
 
       - name: Verify committed bundle is up to date
         run: git diff --exit-code -- lib

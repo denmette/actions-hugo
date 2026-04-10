@@ -4,7 +4,7 @@
 This repository is a TypeScript-based GitHub Action for installing Hugo. Source files live in `src/`; `src/index.ts` is the action entrypoint and `src/main.ts` coordinates the install flow. Tests live in `__tests__/` with fixture payloads under `__tests__/data/`. Repository metadata and packaging files are at the root, including `action.yml`, `Dockerfile`, `Makefile`, `.releaserc.json`, and the workflow definitions under `.github/workflows`. Build output is generated into `lib/`, which is the path referenced by `action.yml`.
 
 ## Build, Test, and Development Commands
-Use Node `24.10+` and npm `10.2+` as declared in `package.json`.
+Use `nvm use` to select Node `24.14.1` from `.nvmrc`, then `corepack enable` and `corepack install` so the repo uses the pinned npm `11.12.1` from `package.json`. CI follows the same pattern instead of installing npm separately.
 
 - `npm test`: run Vitest with coverage.
 - `npm run lint`: lint all TypeScript in `src/` and `__tests__/`.
@@ -12,7 +12,8 @@ Use Node `24.10+` and npm `10.2+` as declared in `package.json`.
 - `npm run build`: bundle the action with `@vercel/ncc` into `lib/`.
 - `npm run release:dry-run`: load the semantic-release configuration and validate the release flow up to the remote GitHub boundary.
 - `npm run all`: run format check, lint, and tests in one pass.
-- `npm install`: installs dependencies and refreshes the local Husky hooks automatically.
+- `npm ci`: install dependencies from `package-lock.json` and refresh local Husky hooks automatically.
+- `npm install`: only use when intentionally updating dependency metadata or the lockfile.
 - `git pull --rebase`: the post-merge hook only refreshes dependencies when `package.json`, `package-lock.json`, or `.nvmrc` changed, and it warns instead of failing the pull if `npm ci` cannot complete.
 - `make test` or `make all`: run the same checks inside the project’s Docker image.
 

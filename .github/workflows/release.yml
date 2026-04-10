@@ -28,11 +28,13 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - run: npm install --global npm@11.12.1
+      - run: corepack enable
 
-      - run: npm ci
+      - run: corepack install
 
-      - run: npm run build
+      - run: corepack npm ci
+
+      - run: corepack npm run build
 
       - name: Verify committed bundle is up to date
         run: git diff --exit-code -- lib
@@ -40,4 +42,4 @@ jobs:
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
+        run: corepack npm exec semantic-release

@@ -21,12 +21,12 @@ cirun:
 
 .PHONY: test
 test:
-	$(DOCKER_RUN) npm test
+	$(DOCKER_RUN) corepack npm test
 
 .PHONY: all
 all:
-	$(DOCKER_RUN) npm run all
+	$(DOCKER_RUN) corepack npm run all
 
 .PHONY: ciall
 ciall:
-	$(DOCKER_RUN_CI) npm run all
+	$(DOCKER_RUN_CI) corepack npm run all

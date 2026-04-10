@@ -52,6 +52,7 @@ Thanks to this change, we can complete this action in less than a few seconds.
 - [CHANGELOG](#changelog)
 - [License](#license)
 - [About Maintainer](#about-maintainer)
+- [Local Setup](#local-setup)
 - [Maintainer Notes](#maintainer-notes)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -408,6 +409,13 @@ jobs:
 - Current fork maintainer: [Maarten Casteels (@denmette)](https://github.com/denmette)
 - README examples in this repository target the maintained fork: [denmette/actions-hugo](https://github.com/denmette/actions-hugo)
 - [GitHub Action Hero: Shohei Ueda - The GitHub Blog](https://github.blog/2020-03-22-github-action-hero-shohei-ueda/)
+
+## Local Setup
+
+This repository standardizes on Node `24.14.1` and npm `11.12.1`.
+Use `nvm use`, `corepack enable`, `corepack install`, and then `npm ci` so local development matches the repository baseline and CI behavior.
+
+Full setup and usage notes live in [docs/local-setup.md](docs/local-setup.md).
 
 
 
