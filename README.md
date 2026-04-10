@@ -404,6 +404,10 @@ Use `nvm use`, `corepack enable`, `corepack install`, and then `npm ci` so local
 
 Full setup and usage notes live in [docs/local-setup.md](docs/local-setup.md).
 
+Repository structure and workflow/runtime boundaries are documented in
+[docs/architecture.md](docs/architecture.md), with the matching PlantUML source in
+[docs/architecture.puml](docs/architecture.puml).
+
 ## Maintainer Notes
 
 The repository commits the bundled action output in `lib/index.js`. After source or dependency changes, regenerate it with:
