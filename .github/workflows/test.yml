@@ -41,33 +41,45 @@ jobs:
       - run: npm ci
 
       - name: Run prettier
-        if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run format:check
 
       - name: Run eslint
-        if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run lint
 
       - name: Run TypeScript compiler
-        if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run tsc
 
       - name: Build bundled action
-        if: startsWith(matrix.os, 'ubuntu-22.04')
         run: npm run build
-
-      - name: Verify committed bundle is up to date
-        if: startsWith(matrix.os, 'ubuntu-22.04')
-        run: git diff --exit-code -- lib
 
       - run: npm test
 
       - name: Upload test coverage as artifact
-        if: matrix.os == 'ubuntu-22.04'
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ matrix.os }}
           path: coverage
 
-      - if: matrix.os == 'ubuntu-22.04'
+      - if: matrix.os == 'ubuntu-latest'
         uses: codecov/codecov-action@v6
+
+  verify-bundle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - run: npm install --global npm@11.12.1
+
+      - run: npm ci
+
+      - name: Build bundled action
+        run: npm run build
+
+      - name: Verify committed bundle is up to date
+        run: git diff --exit-code -- lib
